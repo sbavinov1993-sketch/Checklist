@@ -1,122 +1,4 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контрольний список</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
-
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список</h1>
-        <div id="checklist-container" class="space-y-6">
-            <p class="text-center text-gray-500">Завантаження даних...</p>
-        </div>
-    </div>
-
-    <div id="modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
-            <button id="btn-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
-            <h3 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-4">Назва</h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Додаткова інформація / Коментар</label>
-                    <textarea id="modal-info" rows="3" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть нотатки..."></textarea>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Фотодоказ</label>
-                    <input type="file" id="modal-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <div id="modal-photo-preview" class="mt-3 hidden">
-                        <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover w-full">
-                    </div>
-                </div>
-                
-                <button id="btn-save" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">
-                    Зберегти зміни
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
-            authDomain: "checklist-144ac.firebaseapp.com",
-            projectId: "checklist-144ac",
-            messagingSenderId: "32249871886",
-            appId: "1:32249871886:web:951b7e7787f5418ef0465f"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        let currentActiveTask = null;
-
-        function loadChecklist() {
-            onSnapshot(collection(db, "sections"), async (querySnapshot) => {
-                const container = document.getElementById('checklist-container');
-                container.innerHTML = '';
-
-                for (const sectionDoc of querySnapshot.docs) {
-                    const sectionData = sectionDoc.data();
-                    const sectionHtml = document.createElement('div');
-                    sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm mb-4";
-                    
-                    const sectionTitle = sectionData.title || sectionData.text || 'Розділ';
-                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionTitle}</h2>`;
-                    
-                    const tasksListContainer = document.createElement('div');
-                    tasksListContainer.className = "space-y-2";
-                    sectionHtml.appendChild(tasksListContainer);
-                    container.appendChild(sectionHtml);
-
-                    const tasksSnapshot = await getDocs(collection(db, `sections/${sectionDoc.id}/tasks`));
-
-                    tasksSnapshot.forEach((taskDoc) => {
-                        const taskData = taskDoc.data();
-                        const taskId = taskDoc.id;
-                        const sectionId = sectionDoc.id;
-
-                        const taskRow = document.createElement('div');
-                        taskRow.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 transition cursor-pointer shadow-xs";
-                        
-                        taskRow.addEventListener('click', (e) => {
-                            if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
-                        });
-
-                        const taskTitle = taskData.text || taskData.title || "Завдання";
-                        const isDone = taskData.Завершено === true || taskData.isCompleted === true;
-
-                        taskRow.innerHTML = `
-                            <div class="flex items-center space-x-3">
-                                <input type="checkbox" ${isDone ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
-                                <span class="font-medium ${isDone ? 'line-through text-gray-400' : 'text-gray-700'}">${taskTitle}</span>
-                            </div>
-                            <div class="text-xs text-gray-400 flex items-center space-x-2">
-                                ${taskData.additionalInfo ? '📝' : ''}
-                                ${taskData.photoUrl ? '🖼️' : ''}
-                                <span class="bg-gray-100 px-2 py-1 rounded">Деталі</span>
-                            </div>
-                        `;
-
-                        taskRow.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
-                            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { 
-                                "Завершено": e.target.checked,
-                                isCompleted: e.target.checked
-                            });
-                        });
-
-                        tasksListContainer.appendChild(taskRow);
-                    });
-                }
-            });
-        }
-
+// ОНОВЛЕНА ФУНКЦІЯ ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА
         function openModal(sectionId, taskId, taskData) {
             currentActiveTask = { sectionId, taskId, taskData };
             document.getElementById('modal-task-title').innerText = taskData.text || taskData.title || "Деталі";
@@ -126,44 +8,59 @@
             const img = document.getElementById('modal-img');
             document.getElementById('modal-file').value = '';
             
+            // Динамічно створюємо або керуємо кнопкою видалення
+            let btnDelete = document.getElementById('btn-delete-photo');
+            if (!btnDelete) {
+                btnDelete = document.createElement('button');
+                btnDelete.id = 'btn-delete-photo';
+                btnDelete.className = "w-full mt-2 bg-red-100 hover:bg-red-200 text-red-600 font-medium py-1.5 rounded-lg transition text-sm hidden";
+                btnDelete.innerText = "❌ Видалити фотодоказ";
+                btnDelete.addEventListener('click', deletePhoto);
+                imgPreview.parentNode.insertBefore(btnDelete, imgPreview.nextSibling);
+            }
+            
             if (taskData.photoUrl) {
                 img.src = taskData.photoUrl;
                 imgPreview.classList.remove('hidden');
+                btnDelete.classList.remove('hidden'); // Показуємо кнопку, якщо фото є
             } else {
                 imgPreview.classList.add('hidden');
+                btnDelete.classList.add('hidden');    // Ховаємо, якщо фото немає
             }
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        function resizeAndConvertToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400;
-                        let width = img.width;
-                        let height = img.height;
+        // НОВА ФУНКЦІЯ ДЛЯ МИТТЄВОГО ВИДАЛЕННЯ ФОТО
+        async function deletePhoto() {
+            if (!currentActiveTask) return;
+            const { sectionId, taskId } = currentActiveTask;
+            
+            if (confirm("Ви впевнені, що хочете видалити цей фотодоказ?")) {
+                const btnDelete = document.getElementById('btn-delete-photo');
+                btnDelete.innerText = "Видалення...";
+                btnDelete.disabled = true;
 
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.4));
-                    };
-                };
-                reader.onerror = error => reject(error);
-            });
+                try {
+                    // Просто затираємо поле фото в базі Firestore
+                    await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), {
+                        photoUrl: ""
+                    });
+                    
+                    // Оновлюємо інтерфейс у модалці
+                    document.getElementById('modal-photo-preview').classList.add('hidden');
+                    btnDelete.classList.add('hidden');
+                    // Оновлюємо дані в поточному об'єкті
+                    currentActiveTask.taskData.photoUrl = "";
+                } catch (err) {
+                    alert("Помилка видалення: " + err.message);
+                } finally {
+                    btnDelete.innerText = "❌ Видалити фотодоказ";
+                    btnDelete.disabled = false;
+                }
+            }
         }
 
+        // ТРОХИ ОНОВЛЕНЕ ЗБЕРЕЖЕННЯ (додано очищення інпуту)
         async function saveModalData() {
             if (!currentActiveTask) return;
             const { sectionId, taskId } = currentActiveTask;
@@ -195,15 +92,3 @@
                 btnSave.disabled = false;
             }
         }
-
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-            currentActiveTask = null;
-        }
-
-        document.getElementById('btn-close').addEventListener('click', closeModal);
-        document.getElementById('btn-save').addEventListener('click', saveModalData);
-        loadChecklist();
-    </script>
-</body>
-</html>
