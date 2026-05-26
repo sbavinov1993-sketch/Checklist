@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Мій Контрольний Список</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
+        .section-box { border-left: 4px solid #1a73e8; background: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .section-title { font-weight: bold; font-size: 18px; margin-bottom: 12px; color: #1a73e8; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+        .task-item { display: flex; align-items: center; padding: 8px 0; font-size: 16px; }
+        .task-item input { margin-right: 12px; transform: scale(1.3); cursor: pointer; }
+        /* Ефект закреслення для виконаних завдань */
+        .task-item.completed span { text-decoration: line-through; color: #888; }
+        .no-data { text-align: center; color: #666; font-style: italic; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Контрольний список</h1>
+        <div id="checklist-content">Спроба підключення до бази даних...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ⚠️ ВСТАВТЕ СЮДИ ВАШІ ОСОБИСТІ КЛЮЧІ З FIREBASE (як минулого разу):
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
+            authDomain: "checklist-144ac.firebaseapp.com",
+            projectId: "checklist-144ac",
+            storageBucket: "checklist-144ac.firebasestorage.app",
+            messagingSenderId: "32249871886",
+            appId: "1:32249871886:web:951b7e7787f5418ef0465f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadChecklist() {
+            const contentDiv = document.getElementById('checklist-content');
+            
+            try {
+                // Визначаємо правильну мову назви колекції
+                let collectionName = "розділи";
+                let sectionsSnapshot = await getDocs(collection(db, collectionName));
+                if (sectionsSnapshot.empty) {
+                    collectionName = "sections";
+                    sectionsSnapshot = await getDocs(collection(db, collectionName));
+                }
+
+                if (sectionsSnapshot.empty) {
+                    contentDiv.innerHTML = '<div class="no-data">У базі даних поки немає створених блоків.</div>';
+                    return;
+                }
+
+                contentDiv.innerHTML = ''; 
+
+                for (const sectionDoc of sectionsSnapshot.docs) {
+                    const sectionData = sectionDoc.data();
+                    const blockTitle = sectionData.титул || sectionData.title || "Блок без назви";
+
+                    const sectionBox = document.createElement('div');
+                    sectionBox.className = 'section-box';
+                    sectionBox.innerHTML = `<div class="section-title">${blockTitle}</div>`;
+
+                    // Визначаємо правильну назву підколекції завдань
+                    let taskCollectionName = "завдання";
+                    let tasksSnapshot = await getDocs(collection(db, collectionName, sectionDoc.id, taskCollectionName));
+                    if (tasksSnapshot.empty) {
+                        taskCollectionName = "tasks";
+                        tasksSnapshot = await getDocs(collection(db, collectionName, sectionDoc.id, taskCollectionName));
+                    }
+
+                    tasksSnapshot.forEach((taskDoc) => {
+                        const taskData = taskDoc.data();
+                        
+                        const isDone = taskData.isCompleted === true || taskData.Завершено === true;
+                        const taskText = taskData.text || taskData.текст || "Пусте завдання";
+
+                        const taskItem = document.createElement('div');
+                        // Якщо завдання вже виконано в базі, додаємо клас красивого закреслення тексту
+                        taskItem.className = `task-item ${isDone ? 'completed' : ''}`;
+                        
+                        // Створюємо саму галочку та текст
+                        taskItem.innerHTML = `
+                            <input type="checkbox" ${isDone ? 'checked' : ''}>
+                            <span>${taskText}</span>
+                        `;
+
+                        // Знаходимо інтерактивний квадратик усередині цього пункту
+                        const checkbox = taskItem.querySelector('input');
+                        
+                        // ХИТРА КОМАНДА: Що робити, коли користувач клікає на квадратик
+                        checkbox.addEventListener('change', async () => {
+                            const newStatus = checkbox.checked;
+                            
+                            // Змінюємо зовнішній вигляд (закреслюємо або повертаємо звичайний текст)
+                            if (newStatus) {
+                                taskItem.classList.add('completed');
+                            } else {
+                                taskItem.classList.remove('completed');
+                            }
+
+                            // Прямий шлях до цього конкретного завдання в хмарі Firebase
+                            const taskDocRef = doc(db, collectionName, sectionDoc.id, taskCollectionName, taskDoc.id);
+                            
+                            try {
+                                // Оновлюємо статус в базі даних у реальному часі!
+                                await updateDoc(taskDocRef, {
+                                    isCompleted: newStatus,
+                                    // Про всяк випадок оновлюємо обидва варіанти назв, якщо база перекладена
+                                    ...(taskData.hasOwnProperty('Завершено') && { Завершено: newStatus })
+                                });
+                                console.log("Статус успішно змінено в Firebase!");
+                            } catch (err) {
+                                console.error("Не вдалося оновити базу даних:", err);
+                            }
+                        });
+
+                        sectionBox.appendChild(taskItem);
+                    });
+
+                    contentDiv.appendChild(sectionBox);
+                }
+            } catch (error) {
+                console.error("Помилка:", error);
+                contentDiv.innerHTML = `<div class="no-data" style="color:red;">Помилка зв'язку: ${error.message}</div>`;
+            }
+        }
+
+        loadChecklist();
+    </script>
+</body>
+</html>
