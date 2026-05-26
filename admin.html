@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель звітів перевірок</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Журнал комплексних перевірок</h1>
+                <p class="text-sm text-gray-500">Всі збережені акти перевірок та виявлені порушення з бази Firebase</p>
+            </div>
+            <button id="btn-refresh" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition shadow-xs flex items-center justify-center space-x-2">
+                <span>🔄 Оновити дані</span>
+            </button>
+        </div>
+
+        <div id="reports-container" class="space-y-4">
+            <div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">
+                <span class="animate-pulse">Завантаження журналу звітів з бази...</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Твоя поточна конфігурація Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
+            authDomain: "checklist-144ac.firebaseapp.com",
+            projectId: "checklist-144ac",
+            messagingSenderId: "32249871886",
+            appId: "1:32249871886:web:951b7e7787f5418ef0465f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadReports() {
+            const container = document.getElementById('reports-container');
+            container.innerHTML = '<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs"><span class="animate-pulse">Оновлення даних...</span></div>';
+
+            try {
+                // Запитуємо документи з сортуванням від нових до старих
+                const q = query(collection(db, "submitted_reports"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    container.innerHTML = `
+                        <div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">
+                            📭 Жодного звіту в базі даних ще не знайдено.
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                querySnapshot.forEach((doc) => {
+                    const report = doc.data();
+                    
+                    // Форматування дати
+                    let reportDate = 'Незворотна дата';
+                    if (report.createdAt) {
+                        const d = new Date(report.createdAt);
+                        reportDate = d.toLocaleString('uk-UA', { 
+                            day: '2-digit', month: '2-digit', year: 'numeric', 
+                            hour: '2-digit', minute: '2-digit' 
+                        });
+                    }
+
+                    // Створення картки звіту
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg";
+
+                    // Кількість зафіксованих пунктів у звіті
+                    const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
+
+                    card.innerHTML = `
+                        <div class="p-4 bg-gray-50 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-100/70 transition toggler-btn">
+                            <div class="space-y-1">
+                                <div class="text-sm text-gray-400 font-mono">${reportDate}</div>
+                                <div class="font-bold text-gray-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-700">${report.inspectorName || 'Не вказано'}</span></div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">Пунктів: ${totalItems}</span>
+                                <span class="text-gray-400 text-xl font-bold arrow-icon">▼</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 hidden content-area bg-white space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <div>ID акту: ${doc.id}</div>
+                                <div class="md:text-right">Системний час: ${report.createdAt}</div>
+                            </div>
+                            
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки по блоках:</h3>
+                            <div class="space-y-4 block-records-container"></div>
+                        </div>
+                    `;
+
+                    const recordsContainer = card.querySelector('.block-records-container');
+
+                    // Якщо в документі є масив записів по кожному заповненому пункту
+                    if (report.records && Array.isArray(report.records) && report.records.length > 0) {
+                        report.records.forEach((record) => {
+                            const itemRow = document.createElement('div');
+                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100";
+                            
+                            itemRow.innerHTML = `
+                                <h4 class="font-bold text-gray-800 text-sm md:text-base">📌 ${record.taskTitle || 'Пункт перевірки'}</h4>
+                                ${record.comment ? `<p class="text-gray-700 text-sm whitespace-pre-wrap bg-white p-2.5 rounded-lg border border-gray-200 shadow-2xs">${record.comment}</p>` : '<p class="text-gray-400 text-xs italic">Без текстового коментаря</p>'}
+                                ${record.photoUrl ? `
+                                    <div class="mt-2 max-w-md">
+                                        <a href="${record.photoUrl}" target="_blank" title="Відкрити фото в повному розмірі">
+                                            <img src="${record.photoUrl}" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs hover:opacity-90 transition">
+                                        </a>
+                                        <span class="text-2xs text-gray-400 mt-1 block">📸 Клікніть на фото, щоб збільшити</span>
+                                    </div>
+                                ` : ''}
+                            `;
+                            recordsContainer.appendChild(itemRow);
+                        });
+                    } else {
+                        recordsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Деталізовані дані по пунктах відсутні в структурі цього документа.</p>';
+                    }
+
+                    // Логіка розгортання/згортання картки звіту
+                    const toggler = card.querySelector('.toggler-btn');
+                    const content = card.querySelector('.content-area');
+                    const arrow = card.querySelector('.arrow-icon');
+                    
+                    toggler.addEventListener('click', () => {
+                        if (content.classList.contains('hidden')) {
+                            content.classList.remove('hidden');
+                            arrow.innerText = '▲';
+                            arrow.classList.remove('text-gray-400');
+                            arrow.classList.add('text-blue-600');
+                        } else {
+                            content.classList.add('hidden');
+                            arrow.innerText = '▼';
+                            arrow.classList.remove('text-blue-600');
+                            arrow.classList.add('text-gray-400');
+                        }
+                    });
+
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-center">
+                        <strong class="block font-bold mb-1">Помилка завантаження з бази даних!</strong>
+                        <p class="text-sm font-mono">${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        document.getElementById('btn-refresh').addEventListener('click', loadReports);
+        
+        // Ініціалізація списку при завантаженні сторінки
+        loadReports();
+    </script>
+</body>
+</html>
