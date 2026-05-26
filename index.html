@@ -10,7 +10,6 @@
 
     <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
         <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список</h1>
-        
         <div id="checklist-container" class="space-y-6">
             <p class="text-center text-gray-500">Завантаження розділів...</p>
         </div>
@@ -19,7 +18,6 @@
     <div id="modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
-            
             <h3 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-4">Назва завдання</h3>
             
             <div class="space-y-4">
@@ -33,7 +31,7 @@
                     <input type="file" id="modal-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     <div id="modal-photo-preview" class="mt-3 hidden">
                         <p class="text-xs text-gray-500 mb-1">Завантажене фото:</p>
-                        <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover">
+                        <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover w-full">
                     </div>
                 </div>
                 
@@ -47,96 +45,71 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        // ВАШІ НАЛАШТУВАННЯ FIREBASE (Скопіюйте їх зі свого Firebase Console)
+        // СЮДИ ВСТАВТЕ СВОЇ КЛЮЧІ FIREBASE З КОНСОЛІ
         const firebaseConfig = {
-            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
+            apiKey: "AIzaSyYourActualApiKeyHere...",
             authDomain: "checklist-144ac.firebaseapp.com",
             projectId: "checklist-144ac",
-            storageBucket: "checklist-144ac.firebasestorage.app",
-            messagingSenderId: "32249871886",
-            appId: "1:32249871886:web:951b7e7787f5418ef0465f"
+            storageBucket: "checklist-144ac.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef"
         };
 
-        // Ініціалізація сервісів
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
+        let currentActiveTask = null;
 
-        let currentActiveTask = null; // Для відстеження, яке підзавдання зараз відкрито в модальному вікні
-
-        // ФУНКЦІЯ СЛУХАННЯ ДАНИХ (Оновлює екран автоматично при змінах в БД)
+        // Функція завантаження та відображення чек-ліста
         function loadChecklist() {
-            const sectionsRef = collection(db, "sections");
-            
-            // Отримуємо всі головні Блоки (Розділи)
-            onSnapshot(sectionsRef, async (querySnapshot) => {
+            onSnapshot(collection(db, "sections"), async (querySnapshot) => {
                 const container = document.getElementById('checklist-container');
-                container.innerHTML = ''; // Очищуємо перед оновленням
+                container.innerHTML = '';
 
                 if(querySnapshot.empty) {
-                    container.innerHTML = '<p class="text-center text-gray-500">Додайте колекцію "sections" та документи в Firestore.</p>';
+                    container.innerHTML = '<p class="text-center text-gray-500">Створіть структуру "sections" -> "tasks" в Firestore.</p>';
                     return;
                 }
 
                 for (const sectionDoc of querySnapshot.docs) {
                     const sectionData = sectionDoc.data();
-                    
-                    // Створюємо HTML-каркас для Розділу (Блоку)
                     const sectionHtml = document.createElement('div');
                     sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm";
-                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || 'Розділ без назви'}</h2>`;
+                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || 'Розділ'}</h2>`;
                     
                     const tasksListContainer = document.createElement('div');
                     tasksListContainer.className = "space-y-2";
                     sectionHtml.appendChild(tasksListContainer);
                     container.appendChild(sectionHtml);
 
-                    // Отримуємо Підблоки (Підколекцію tasks для кожного розділу)
-                    const tasksRef = collection(db, `sections/${sectionDoc.id}/tasks`);
-                    const tasksSnapshot = await getDocs(tasksRef);
-                    
-                    if(tasksSnapshot.empty) {
-                        tasksListContainer.innerHTML = '<p class="text-sm text-gray-400 italic">Немає підблоків</p>';
-                    }
+                    const tasksSnapshot = await getDocs(collection(db, `sections/${sectionDoc.id}/tasks`));
 
                     tasksSnapshot.forEach((taskDoc) => {
                         const taskData = taskDoc.data();
                         const taskId = taskDoc.id;
                         const sectionId = sectionDoc.id;
 
-                        // Створюємо елемент підблоку
                         const taskRow = document.createElement('div');
                         taskRow.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 transition cursor-pointer shadow-2xs";
                         
-                        // Клік по всьому рядку (окрім чекбоксу) відкриває модальне вікно
                         taskRow.addEventListener('click', (e) => {
-                            if (e.target.type !== 'checkbox') {
-                                openModal(sectionId, taskId, taskData);
-                            }
+                            if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
                         });
 
                         taskRow.innerHTML = `
                             <div class="flex items-center space-x-3">
-                                <input type="checkbox" ${taskData.isCompleted ? 'checked' : ''} 
-                                    class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">
+                                <input type="checkbox" ${taskData.isCompleted ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
                                 <span class="font-medium ${taskData.isCompleted ? 'line-through text-gray-400' : 'text-gray-700'}">${taskData.title}</span>
                             </div>
                             <div class="text-xs text-gray-400 flex items-center space-x-2">
                                 ${taskData.additionalInfo ? '📝' : ''}
                                 ${taskData.photoUrl ? '🖼️' : ''}
-                                <span class="bg-gray-100 px-2 py-1 rounded hover:bg-gray-200">Деталі</span>
+                                <span class="bg-gray-100 px-2 py-1 rounded">Деталі</span>
                             </div>
                         `;
 
-                        // Обробник зміни чекбоксу (оновлення в Firebase)
-                        const checkbox = taskRow.querySelector('input[type="checkbox"]');
-                        checkbox.addEventListener('change', async (e) => {
-                            const taskDocRef = doc(db, `sections/${sectionId}/tasks/${taskId}`);
-                            await updateDoc(taskDocRef, {
-                                isCompleted: e.target.checked
-                            });
+                        taskRow.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
+                            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { isCompleted: e.target.checked });
                         });
 
                         tasksListContainer.appendChild(taskRow);
@@ -145,16 +118,14 @@
             });
         }
 
-        // ФУНКЦІЯ ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА
         function openModal(sectionId, taskId, taskData) {
             currentActiveTask = { sectionId, taskId, taskData };
-            
             document.getElementById('modal-task-title').innerText = taskData.title;
             document.getElementById('modal-info').value = taskData.additionalInfo || '';
             
             const imgPreview = document.getElementById('modal-photo-preview');
             const img = document.getElementById('modal-img');
-            document.getElementById('modal-file').value = ''; // Очищуємо інпут файлу
+            document.getElementById('modal-file').value = '';
             
             if (taskData.photoUrl) {
                 img.src = taskData.photoUrl;
@@ -162,11 +133,20 @@
             } else {
                 imgPreview.classList.add('hidden');
             }
-            
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        // ФУНКЦІЯ ЗБЕРЕЖЕННЯ ДАНИХ З МОДАЛЬНОГО ВІКНА
+        // Функція стиснення та конвертації фото в текст (Base64)
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Функція збереження даних
         async function saveModalData() {
             if (!currentActiveTask) return;
             const { sectionId, taskId } = currentActiveTask;
@@ -177,44 +157,33 @@
 
             const infoText = document.getElementById('modal-info').value;
             const fileInput = document.getElementById('modal-file');
-            const taskDocRef = doc(db, `sections/${sectionId}/tasks/${taskId}`);
             
             let updatedData = { additionalInfo: infoText };
 
-            // Перевіряємо, чи вибрано новий файл для завантаження в Storage
             if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const storageRef = ref(storage, `task_photos/${sectionId}_${taskId}_${file.name}`);
-                
                 try {
-                    const snapshot = await uploadBytes(storageRef, file);
-                    const downloadUrl = await getDownloadURL(snapshot.ref);
-                    updatedData.photoUrl = downloadUrl; // Додаємо посилання на фото
+                    // Конвертуємо файл прямо в текст і пишемо в Firestore
+                    const base64String = await convertFileToBase64(fileInput.files[0]);
+                    updatedData.photoUrl = base64String;
                 } catch (error) {
-                    alert("Помилка завантаження фото: " + error.message);
+                    alert("Помилка обробки фото: " + error.message);
                 }
             }
 
-            // Оновлюємо Firestore
-            await updateDoc(taskDocRef, updatedData);
+            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), updatedData);
             
             btnSave.innerText = "Зберегти зміни";
             btnSave.disabled = false;
             closeModal();
-            loadChecklist(); // Перезавантажуємо списки
         }
 
-        // Закриття модального вікна
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
             currentActiveTask = null;
         }
 
-        // Робимо функції доступними для кліків у HTML-тегах
         window.closeModal = closeModal;
         document.getElementById('btn-save').addEventListener('click', saveModalData);
-
-        // Запуск додатку
         loadChecklist();
     </script>
 </body>
