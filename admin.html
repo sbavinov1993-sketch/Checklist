@@ -3,33 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель звітів перевірок</title>
+    <title>Журнал комплексних перевірок</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+<body class="bg-slate-50 min-h-screen p-4 md:p-8 text-slate-800">
 
     <div class="max-w-4xl mx-auto space-y-6">
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-slate-100">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Журнал комплексних перевірок</h1>
-                <p class="text-sm text-gray-500">Всі збережені акти перевірок та виявлені порушення з бази Firebase</p>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Журнал комплексних перевірок</h1>
+                <p class="text-sm text-slate-500 mt-1">Всі збережені акти перевірок та виявлені порушення з бази Firebase</p>
             </div>
-            <button id="btn-refresh" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition shadow-xs flex items-center justify-center space-x-2">
+            <button id="btn-refresh" class="bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold px-5 py-2.5 rounded-xl transition duration-200 shadow-sm shadow-blue-100 flex items-center justify-center space-x-2 shrink-0">
                 <span>🔄 Оновити дані</span>
             </button>
         </div>
 
         <div id="reports-container" class="space-y-4">
-            <div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">
-                <span class="animate-pulse">Завантаження журналу звітів з бази...</span>
+            <div class="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100 shadow-sm animate-pulse">
+                Завантаження журналу звітів з бази...
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Додано deleteDoc та doc для видалення записів
         import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -45,25 +44,25 @@
 
         async function loadReports() {
             const container = document.getElementById('reports-container');
-            container.innerHTML = '<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs"><span class="animate-pulse">Оновлення даних...</span></div>';
+            container.innerHTML = '<div class="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100 shadow-sm animate-pulse">Оновлення даних...</div>';
 
             try {
                 const querySnapshot = await getDocs(collection(db, "submitted_reports"));
 
                 if (querySnapshot.empty) {
                     container.innerHTML = `
-                        <div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">
+                        <div class="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100 shadow-sm">
                             📭 Жодного звіту в базі даних ще не знайдено.
                         </div>`;
                     return;
                 }
 
-                // Сортування в браузері (як у твоїй робочій версії)
                 const reportsArray = [];
                 querySnapshot.forEach((doc) => {
                     reportsArray.push({ id: doc.id, ...doc.data() });
                 });
 
+                // Сортування від найновіших до найстаріших
                 reportsArray.sort((a, b) => {
                     const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
                     const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
@@ -86,40 +85,41 @@
 
                     const card = document.createElement('div');
                     card.id = `card-${docId}`;
-                    card.className = "bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg";
+                    card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition duration-200 hover:shadow-md";
 
                     const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
                     const inspectorName = report.inspectorName || 'Не вказано';
 
-                    // Структура твоєї картки. Контент для PDF загорнуто в id="pdf-content-..."
+                    // Повністю твоя оригінальна структура картки зі збереженням стилістики
                     card.innerHTML = `
-                        <div class="p-4 bg-gray-50 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-100/70 transition toggler-btn">
+                        <div class="p-5 bg-white flex items-center justify-between cursor-pointer hover:bg-slate-50/80 transition duration-150 toggler-btn select-none">
                             <div class="space-y-1">
-                                <div class="text-sm text-gray-400 font-mono">${reportDate}</div>
-                                <div class="font-bold text-gray-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-700">${inspectorName}</span></div>
+                                <div class="text-xs font-semibold text-slate-400 font-mono tracking-wider">${reportDate}</div>
+                                <div class="font-bold text-slate-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-600">${inspectorName}</span></div>
                             </div>
-                            <div class="flex items-center space-x-3">
-                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">Пунктів: ${totalItems}</span>
-                                <span class="text-gray-400 text-xl font-bold arrow-icon">▼</span>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-xl border border-blue-100">Пунктів: ${totalItems}</span>
+                                <span class="text-slate-400 text-lg font-bold arrow-icon transition-transform duration-200">▼</span>
                             </div>
                         </div>
                         
-                        <div class="p-6 hidden content-area bg-white space-y-4">
-                            <div id="pdf-content-${docId}" class="space-y-4 bg-white p-2">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <div class="px-6 pb-6 hidden content-area border-t border-slate-50 pt-5 space-y-5 bg-white">
+                            
+                            <div id="pdf-area-${docId}" class="space-y-5 bg-white p-1">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono text-slate-400 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
                                     <div>ID акту: ${docId}</div>
-                                    <div class="md:text-right">Системний час: ${report.createdAt}</div>
+                                    <div class="md:text-right">Системний маркер: ${report.createdAt || 'немає'}</div>
                                 </div>
                                 
-                                <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки:</h3>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2">Результати перевірки:</h3>
                                 <div class="space-y-4 block-records-container"></div>
                             </div>
 
-                            <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
-                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
+                            <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
+                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 active:scale-98 text-blue-600 border border-blue-200/60 text-sm font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
                                     <span>📥 Завантажити PDF</span>
                                 </button>
-                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
+                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 active:scale-98 text-red-600 border border-red-200/60 text-sm font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
                                     <span>🗑️ Видалити цей звіт</span>
                                 </button>
                             </div>
@@ -131,57 +131,58 @@
                     if (report.records && Array.isArray(report.records) && report.records.length > 0) {
                         report.records.forEach((record) => {
                             const itemRow = document.createElement('div');
-                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100 mb-2 style-pdf-block";
+                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/10 p-4 rounded-r-2xl space-y-2 border border-slate-100 mb-3 style-pdf-block";
                             
-                            // Атрибут crossOrigin="anonymous" потрібен, щоб html2pdf міг копіювати картинки в файл
                             itemRow.innerHTML = `
-                                <h4 class="font-bold text-gray-800 text-sm md:text-base">📌 ${record.taskTitle || 'Пункт перевірки'}</h4>
-                                ${record.comment ? `<p class="text-gray-700 text-sm whitespace-pre-wrap bg-white p-2.5 rounded-lg border border-gray-200 shadow-2xs">${record.comment}</p>` : '<p class="text-gray-400 text-xs italic">Без текстового коментаря</p>'}
+                                <h4 class="font-bold text-slate-800 text-sm md:text-base flex items-start">
+                                    <span class="mr-1.5 shrink-0">📌</span> 
+                                    <span>${record.taskTitle || 'Пункт перевірки'}</span>
+                                </h4>
+                                ${record.comment ? `<p class="text-slate-600 text-sm whitespace-pre-wrap bg-white p-3 rounded-xl border border-slate-100 shadow-2xs">${record.comment}</p>` : '<p class="text-slate-400 text-xs italic pl-1">Без текстового коментаря</p>'}
                                 ${record.photoUrl ? `
                                     <div class="mt-2 max-w-md">
-                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs">
+                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" class="rounded-xl max-h-64 object-cover border border-slate-200 shadow-2xs">
                                     </div>
                                 ` : ''}
                             `;
                             recordsContainer.appendChild(itemRow);
                         });
                     } else {
-                        recordsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Детальні дані відсутні.</p>';
+                        recordsContainer.innerHTML = '<p class="text-slate-400 italic text-sm pl-1">Детальні дані відсутні.</p>';
                     }
 
+                    // Логіка відкриття/закриття
                     const toggler = card.querySelector('.toggler-btn');
                     const content = card.querySelector('.content-area');
                     const arrow = card.querySelector('.arrow-icon');
                     
                     toggler.addEventListener('click', (e) => {
-                        // Якщо клікнули по одній з кнопок дій, не закриваємо вкладку
-                        if (e.target.closest('.btn-delete-report') || e.target.closest('.btn-pdf-report')) return;
+                        if (e.target.closest('button')) return; // Ігноруємо кліки по кнопках
 
                         if (content.classList.contains('hidden')) {
                             content.classList.remove('hidden');
                             arrow.innerText = '▲';
-                            arrow.classList.remove('text-gray-400');
+                            arrow.classList.remove('text-slate-400');
                             arrow.classList.add('text-blue-600');
                         } else {
                             content.classList.add('hidden');
                             arrow.innerText = '▼';
                             arrow.classList.remove('text-blue-600');
-                            arrow.classList.add('text-gray-400');
+                            arrow.classList.add('text-slate-400');
                         }
                     });
 
-                    // НОВА ЛОГІКА: Генерація PDF (Повністю автономна)
+                    // Автономна та безпечна генерація PDF
                     const pdfBtn = card.querySelector('.btn-pdf-report');
                     pdfBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         
-                        const element = document.getElementById(`pdf-content-${docId}`);
-                        const formattedName = inspectorName.replace(/\s+/g, '_');
-                        const shortDate = reportDate.split(',')[0].replace(/\//g, '-');
-
+                        const element = document.getElementById(`pdf-area-${docId}`);
+                        const nameFile = `Zvit_${inspectorName.replace(/\s+/g, '_')}_${reportDate.split(',')[0].replace(/\./g, '_')}.pdf`;
+                        
                         const opt = {
-                            margin:       [10, 10, 10, 10], // відступи в мм
-                            filename:     `Звіт_${formattedName}_${shortDate}.pdf`,
+                            margin:       [12, 12, 12, 12],
+                            filename:     nameFile,
                             image:        { type: 'jpeg', quality: 0.98 },
                             html2canvas:  { scale: 2, useCORS: true, logging: false },
                             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -189,26 +190,49 @@
                         };
 
                         html2pdf().set(opt).from(element).save().catch(err => {
-                            alert("Помилка друку в PDF: " + err.message);
+                            alert("Помилка генерації файлу: " + err.message);
                         });
                     });
 
-                    // Логіка кнопки видалення (Твоя оригінальна версія)
+                    // Безпечне видалення звіту
                     const deleteBtn = card.querySelector('.btn-delete-report');
                     deleteBtn.addEventListener('click', async (e) => {
                         e.stopPropagation();
-                        const id = e.currentTarget.getAttribute('data-id');
                         
                         if (confirm(`Ви дійсно хочете видалити звіт від: ${inspectorName}?`)) {
                             e.currentTarget.innerText = "Видалення...";
                             e.currentTarget.disabled = true;
                             
                             try {
-                                await deleteDoc(doc(db, "submitted_reports", id));
-                                document.getElementById(`card-${id}`).remove();
-                                alert("Звіт успішно видалено з бази.");
+                                await deleteDoc(doc(db, "submitted_reports", docId));
+                                document.getElementById(`card-${docId}`).remove();
+                                alert("Звіт успішно видалено.");
                                 
                                 if (container.children.length === 0) {
-                                    container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">📭 Жодного звіту не знайдено.</div>`;
+                                    container.innerHTML = `<div class="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100 shadow-sm">📭 Жодного звіту не знайдено.</div>`;
                                 }
-                            } catch
+                            } catch (err) {
+                                alert("Помилка видалення: " + err.message);
+                                e.currentTarget.innerText = "🗑️ Видалити цей звіт";
+                                e.currentTarget.disabled = false;
+                            }
+                        }
+                    });
+
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="bg-red-50 border border-red-100 text-red-600 rounded-2xl p-5 text-center shadow-sm">
+                        <strong class="block font-bold mb-1">Помилка завантаження бази даних!</strong>
+                        <p class="text-xs font-mono">${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        document.getElementById('btn-refresh').addEventListener('click', loadReports);
+        loadReports();
+    </script>
+</body>
+</html>
