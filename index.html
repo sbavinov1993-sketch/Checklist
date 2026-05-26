@@ -3,163 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мій Контрольний Список</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Базові налаштування сторінки */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f1f5f9; 
-            padding: 24px 16px; 
-            color: #1e293b;
-            line-height: 1.5;
-        }
-        .container { 
-            max-width: 650px; 
-            margin: 0 auto; 
-            background: #ffffff; 
-            padding: 32px 24px; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
-        }
-        
-        /* Головний заголовок */
-        h1 { 
-            text-align: center; 
-            color: #0f172a; 
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 28px; 
-            letter-spacing: -0.5px;
-        }
-
-        /* Стилізація інформаційних повідомлень */
-        #checklist-content {
-            font-size: 15px;
-        }
-        .no-data { 
-            text-align: center; 
-            color: #64748b; 
-            font-style: italic; 
-            padding: 30px; 
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px dashed #cbd5e1;
-        }
-
-        /* Окремі блоки/розділи */
-        .section-box { 
-            background: #f8fafc; 
-            border: 1px solid #e2e8f0;
-            padding: 20px; 
-            margin-bottom: 20px; 
-            border-radius: 12px; 
-            transition: all 0.2s ease;
-        }
-        .section-box:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .section-title { 
-            font-weight: 600; 
-            font-size: 16px; 
-            margin-bottom: 14px; 
-            color: #2563eb; 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e2e8f0; 
-            padding-bottom: 6px; 
-        }
-
-        /* Елементи списку (завдання) */
-        .task-item { 
-            display: flex; 
-            align-items: flex-start; 
-            padding: 10px 8px; 
-            font-size: 15px; 
-            font-weight: 500;
-            color: #334155;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background 0.15s ease;
-        }
-        .task-item:hover {
-            background: #f1f5f9;
-        }
-        
-        /* Кастомний дизайн чекбоксів */
-        .task-item input[type="checkbox"] { 
-            appearance: none;
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #cbd5e1;
-            border-radius: 6px;
-            margin-right: 12px; 
-            margin-top: 1px;
-            flex-shrink: 0;
-            cursor: pointer;
-            display: grid;
-            place-content: center;
-            transition: all 0.15s ease;
-        }
-        .task-item input[type="checkbox"]::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            background-color: #ffffff;
-            /* Малюємо галочку через clip-path */
-            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-        }
-        .task-item input[type="checkbox"]:checked {
-            background-color: #10b981;
-            border-color: #10b981;
-        }
-        .task-item input[type="checkbox"]:checked::before {
-            transform: scale(1);
-        }
-        .task-item input[type="checkbox"]:focus-visible {
-            outline: 2px solid #2563eb;
-            outline-offset: 2px;
-        }
-
-        /* Текст завдання */
-        .task-item span {
-            transition: all 0.15s ease;
-            user-select: none;
-        }
-
-        /* Ефект для виконаних завдань */
-        .task-item.completed {
-            background: transparent;
-        }
-        .task-item.completed span { 
-            text-decoration: line-through; 
-            color: #94a3b8; 
-        }
-    </style>
+    <title>Контрольний список</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
-    <div class="container">
-        <h1>Контрольний список</h1>
-        <div id="checklist-content">Спроба підключення до бази даних...</div>
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список</h1>
+        
+        <div id="checklist-container" class="space-y-6">
+            <p class="text-center text-gray-500">Завантаження розділів...</p>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+            
+            <h3 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-4">Назва завдання</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Додаткова інформація / Коментар</label>
+                    <textarea id="modal-info" rows="3" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть нотатки тут..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Фотодоказ</label>
+                    <input type="file" id="modal-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <div id="modal-photo-preview" class="mt-3 hidden">
+                        <p class="text-xs text-gray-500 mb-1">Завантажене фото:</p>
+                        <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover">
+                    </div>
+                </div>
+                
+                <button id="btn-save" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">
+                    Зберегти зміни
+                </button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+        // ВАШІ НАЛАШТУВАННЯ FIREBASE (Скопіюйте їх зі свого Firebase Console)
         const firebaseConfig = {
             apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
             authDomain: "checklist-144ac.firebaseapp.com",
@@ -169,91 +59,162 @@
             appId: "1:32249871886:web:951b7e7787f5418ef0465f"
         };
 
+        // Ініціалізація сервісів
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        async function loadChecklist() {
-            const contentDiv = document.getElementById('checklist-content');
+        let currentActiveTask = null; // Для відстеження, яке підзавдання зараз відкрито в модальному вікні
+
+        // ФУНКЦІЯ СЛУХАННЯ ДАНИХ (Оновлює екран автоматично при змінах в БД)
+        function loadChecklist() {
+            const sectionsRef = collection(db, "sections");
             
-            try {
-                let collectionName = "розділи";
-                let sectionsSnapshot = await getDocs(collection(db, collectionName));
-                if (sectionsSnapshot.empty) {
-                    collectionName = "sections";
-                    sectionsSnapshot = await getDocs(collection(db, collectionName));
-                }
+            // Отримуємо всі головні Блоки (Розділи)
+            onSnapshot(sectionsRef, async (querySnapshot) => {
+                const container = document.getElementById('checklist-container');
+                container.innerHTML = ''; // Очищуємо перед оновленням
 
-                if (sectionsSnapshot.empty) {
-                    contentDiv.innerHTML = '<div class="no-data">У базі даних поки немає створених блоків.</div>';
+                if(querySnapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-gray-500">Додайте колекцію "sections" та документи в Firestore.</p>';
                     return;
                 }
 
-                contentDiv.innerHTML = ''; 
-
-                for (const sectionDoc of sectionsSnapshot.docs) {
+                for (const sectionDoc of querySnapshot.docs) {
                     const sectionData = sectionDoc.data();
-                    const blockTitle = sectionData.титул || sectionData.title || "Блок без назви";
+                    
+                    // Створюємо HTML-каркас для Розділу (Блоку)
+                    const sectionHtml = document.createElement('div');
+                    sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm";
+                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || 'Розділ без назви'}</h2>`;
+                    
+                    const tasksListContainer = document.createElement('div');
+                    tasksListContainer.className = "space-y-2";
+                    sectionHtml.appendChild(tasksListContainer);
+                    container.appendChild(sectionHtml);
 
-                    const sectionBox = document.createElement('div');
-                    sectionBox.className = 'section-box';
-                    sectionBox.innerHTML = `<div class="section-title">${blockTitle}</div>`;
-
-                    let taskCollectionName = "завдання";
-                    let tasksSnapshot = await getDocs(collection(db, collectionName, sectionDoc.id, taskCollectionName));
-                    if (tasksSnapshot.empty) {
-                        taskCollectionName = "tasks";
-                        tasksSnapshot = await getDocs(collection(db, collectionName, sectionDoc.id, taskCollectionName));
+                    // Отримуємо Підблоки (Підколекцію tasks для кожного розділу)
+                    const tasksRef = collection(db, `sections/${sectionDoc.id}/tasks`);
+                    const tasksSnapshot = await getDocs(tasksRef);
+                    
+                    if(tasksSnapshot.empty) {
+                        tasksListContainer.innerHTML = '<p class="text-sm text-gray-400 italic">Немає підблоків</p>';
                     }
 
                     tasksSnapshot.forEach((taskDoc) => {
                         const taskData = taskDoc.data();
-                        
-                        const isDone = taskData.isCompleted === true || taskData.Завершено === true;
-                        const taskText = taskData.text || taskData.текст || "Пусте завдання";
+                        const taskId = taskDoc.id;
+                        const sectionId = sectionDoc.id;
 
-                        const taskItem = document.createElement('label'); // Змінено на label для зручності кліку по тексту
-                        taskItem.className = `task-item ${isDone ? 'completed' : ''}`;
+                        // Створюємо елемент підблоку
+                        const taskRow = document.createElement('div');
+                        taskRow.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 transition cursor-pointer shadow-2xs";
                         
-                        taskItem.innerHTML = `
-                            <input type="checkbox" ${isDone ? 'checked' : ''}>
-                            <span>${taskText}</span>
-                        `;
-
-                        const checkbox = taskItem.querySelector('input');
-                        
-                        checkbox.addEventListener('change', async () => {
-                            const newStatus = checkbox.checked;
-                            
-                            if (newStatus) {
-                                taskItem.classList.add('completed');
-                            } else {
-                                taskItem.classList.remove('completed');
-                            }
-
-                            const taskDocRef = doc(db, collectionName, sectionDoc.id, taskCollectionName, taskDoc.id);
-                            
-                            try {
-                                await updateDoc(taskDocRef, {
-                                    isCompleted: newStatus,
-                                    ...(taskData.hasOwnProperty('Завершено') && { Завершено: newStatus })
-                                });
-                                console.log("Статус успішно змінено в Firebase!");
-                            } catch (err) {
-                                console.error("Не вдалося оновити базу даних:", err);
+                        // Клік по всьому рядку (окрім чекбоксу) відкриває модальне вікно
+                        taskRow.addEventListener('click', (e) => {
+                            if (e.target.type !== 'checkbox') {
+                                openModal(sectionId, taskId, taskData);
                             }
                         });
 
-                        sectionBox.appendChild(taskItem);
-                    });
+                        taskRow.innerHTML = `
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" ${taskData.isCompleted ? 'checked' : ''} 
+                                    class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">
+                                <span class="font-medium ${taskData.isCompleted ? 'line-through text-gray-400' : 'text-gray-700'}">${taskData.title}</span>
+                            </div>
+                            <div class="text-xs text-gray-400 flex items-center space-x-2">
+                                ${taskData.additionalInfo ? '📝' : ''}
+                                ${taskData.photoUrl ? '🖼️' : ''}
+                                <span class="bg-gray-100 px-2 py-1 rounded hover:bg-gray-200">Деталі</span>
+                            </div>
+                        `;
 
-                    contentDiv.appendChild(sectionBox);
+                        // Обробник зміни чекбоксу (оновлення в Firebase)
+                        const checkbox = taskRow.querySelector('input[type="checkbox"]');
+                        checkbox.addEventListener('change', async (e) => {
+                            const taskDocRef = doc(db, `sections/${sectionId}/tasks/${taskId}`);
+                            await updateDoc(taskDocRef, {
+                                isCompleted: e.target.checked
+                            });
+                        });
+
+                        tasksListContainer.appendChild(taskRow);
+                    });
                 }
-            } catch (error) {
-                console.error("Помилка:", error);
-                contentDiv.innerHTML = `<div class="no-data" style="color:#ef4444; border-color:#fca5a5;">Помилка зв'язку: ${error.message}</div>`;
-            }
+            });
         }
 
+        // ФУНКЦІЯ ВІДКРИТТЯ МОДАЛЬНОГО ВІКНА
+        function openModal(sectionId, taskId, taskData) {
+            currentActiveTask = { sectionId, taskId, taskData };
+            
+            document.getElementById('modal-task-title').innerText = taskData.title;
+            document.getElementById('modal-info').value = taskData.additionalInfo || '';
+            
+            const imgPreview = document.getElementById('modal-photo-preview');
+            const img = document.getElementById('modal-img');
+            document.getElementById('modal-file').value = ''; // Очищуємо інпут файлу
+            
+            if (taskData.photoUrl) {
+                img.src = taskData.photoUrl;
+                imgPreview.classList.remove('hidden');
+            } else {
+                imgPreview.classList.add('hidden');
+            }
+            
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        // ФУНКЦІЯ ЗБЕРЕЖЕННЯ ДАНИХ З МОДАЛЬНОГО ВІКНА
+        async function saveModalData() {
+            if (!currentActiveTask) return;
+            const { sectionId, taskId } = currentActiveTask;
+            
+            const btnSave = document.getElementById('btn-save');
+            btnSave.innerText = "Зберігання...";
+            btnSave.disabled = true;
+
+            const infoText = document.getElementById('modal-info').value;
+            const fileInput = document.getElementById('modal-file');
+            const taskDocRef = doc(db, `sections/${sectionId}/tasks/${taskId}`);
+            
+            let updatedData = { additionalInfo: infoText };
+
+            // Перевіряємо, чи вибрано новий файл для завантаження в Storage
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const storageRef = ref(storage, `task_photos/${sectionId}_${taskId}_${file.name}`);
+                
+                try {
+                    const snapshot = await uploadBytes(storageRef, file);
+                    const downloadUrl = await getDownloadURL(snapshot.ref);
+                    updatedData.photoUrl = downloadUrl; // Додаємо посилання на фото
+                } catch (error) {
+                    alert("Помилка завантаження фото: " + error.message);
+                }
+            }
+
+            // Оновлюємо Firestore
+            await updateDoc(taskDocRef, updatedData);
+            
+            btnSave.innerText = "Зберегти зміни";
+            btnSave.disabled = false;
+            closeModal();
+            loadChecklist(); // Перезавантажуємо списки
+        }
+
+        // Закриття модального вікна
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            currentActiveTask = null;
+        }
+
+        // Робимо функції доступними для кліків у HTML-тегах
+        window.closeModal = closeModal;
+        document.getElementById('btn-save').addEventListener('click', saveModalData);
+
+        // Запуск додатку
         loadChecklist();
     </script>
 </body>
