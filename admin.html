@@ -28,9 +28,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Додано deleteDoc та doc для видалення записів
+        import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Твоя поточна конфігурація Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
             authDomain: "checklist-144ac.firebaseapp.com",
@@ -47,9 +47,7 @@
             container.innerHTML = '<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs"><span class="animate-pulse">Оновлення даних...</span></div>';
 
             try {
-                // Запитуємо документи з сортуванням від нових до старих
-                const q = query(collection(db, "submitted_reports"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
+                const querySnapshot = await getDocs(collection(db, "submitted_reports"));
 
                 if (querySnapshot.empty) {
                     container.innerHTML = `
@@ -59,13 +57,24 @@
                     return;
                 }
 
+                // Сортування в браузері (як у твоїй робочій версії)
+                const reportsArray = [];
+                querySnapshot.forEach((doc) => {
+                    reportsArray.push({ id: doc.id, ...doc.data() });
+                });
+
+                reportsArray.sort((a, b) => {
+                    const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+                    const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+                    return dateB - dateA;
+                });
+
                 container.innerHTML = '';
 
-                querySnapshot.forEach((doc) => {
-                    const report = doc.data();
+                reportsArray.forEach((report) => {
+                    const docId = report.id;
                     
-                    // Форматування дати
-                    let reportDate = 'Незворотна дата';
+                    let reportDate = 'Невідома дата';
                     if (report.createdAt) {
                         const d = new Date(report.createdAt);
                         reportDate = d.toLocaleString('uk-UA', { 
@@ -74,13 +83,13 @@
                         });
                     }
 
-                    // Створення картки звіту
                     const card = document.createElement('div');
+                    card.id = `card-${docId}`;
                     card.className = "bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg";
 
-                    // Кількість зафіксованих пунктів у звіті
                     const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
 
+                    // Структура картки повністю ідентична твоїй робочій версії, але з доданою кнопкою внизу
                     card.innerHTML = `
                         <div class="p-4 bg-gray-50 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-100/70 transition toggler-btn">
                             <div class="space-y-1">
@@ -95,47 +104,48 @@
                         
                         <div class="p-6 hidden content-area bg-white space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                <div>ID акту: ${doc.id}</div>
+                                <div>ID акту: ${docId}</div>
                                 <div class="md:text-right">Системний час: ${report.createdAt}</div>
                             </div>
                             
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки по блоках:</h3>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки:</h3>
                             <div class="space-y-4 block-records-container"></div>
+
+                            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
+                                    <span>🗑️ Видалити цей звіт</span>
+                                </button>
+                            </div>
                         </div>
                     `;
 
                     const recordsContainer = card.querySelector('.block-records-container');
 
-                    // Якщо в документі є масив записів по кожному заповненому пункту
                     if (report.records && Array.isArray(report.records) && report.records.length > 0) {
                         report.records.forEach((record) => {
                             const itemRow = document.createElement('div');
-                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100";
+                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100 mb-2";
                             
                             itemRow.innerHTML = `
                                 <h4 class="font-bold text-gray-800 text-sm md:text-base">📌 ${record.taskTitle || 'Пункт перевірки'}</h4>
                                 ${record.comment ? `<p class="text-gray-700 text-sm whitespace-pre-wrap bg-white p-2.5 rounded-lg border border-gray-200 shadow-2xs">${record.comment}</p>` : '<p class="text-gray-400 text-xs italic">Без текстового коментаря</p>'}
                                 ${record.photoUrl ? `
                                     <div class="mt-2 max-w-md">
-                                        <a href="${record.photoUrl}" target="_blank" title="Відкрити фото в повному розмірі">
-                                            <img src="${record.photoUrl}" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs hover:opacity-90 transition">
-                                        </a>
-                                        <span class="text-2xs text-gray-400 mt-1 block">📸 Клікніть на фото, щоб збільшити</span>
+                                        <img src="${record.photoUrl}" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs">
                                     </div>
                                 ` : ''}
                             `;
                             recordsContainer.appendChild(itemRow);
                         });
                     } else {
-                        recordsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Деталізовані дані по пунктах відсутні в структурі цього документа.</p>';
+                        recordsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Детальні дані відсутні.</p>';
                     }
 
-                    // Логіка розгортання/згортання картки звіту
                     const toggler = card.querySelector('.toggler-btn');
                     const content = card.querySelector('.content-area');
                     const arrow = card.querySelector('.arrow-icon');
                     
-                    toggler.addEventListener('click', () => {
+                    toggler.addEventListener('click', (e) => {
                         if (content.classList.contains('hidden')) {
                             content.classList.remove('hidden');
                             arrow.innerText = '▲';
@@ -149,21 +159,46 @@
                         }
                     });
 
+                    // Логіка кнопки видалення
+                    const deleteBtn = card.querySelector('.btn-delete-report');
+                    deleteBtn.addEventListener('click', async (e) => {
+                        e.stopPropagation(); // Щоб картка не згорталася при кліку на кнопку
+                        const id = e.currentTarget.getAttribute('data-id');
+                        const inspectorName = report.inspectorName || "Не вказано";
+                        
+                        if (confirm(`Ви дійсно хочете видалити звіт від: ${inspectorName}?`)) {
+                            e.currentTarget.innerText = "Видалення...";
+                            e.currentTarget.disabled = true;
+                            
+                            try {
+                                await deleteDoc(doc(db, "submitted_reports", id));
+                                document.getElementById(`card-${id}`).remove();
+                                alert("Звіт успішно видалено з бази.");
+                                
+                                if (container.children.length === 0) {
+                                    container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">📭 Жодного звіту не знайдено.</div>`;
+                                }
+                            } catch (err) {
+                                alert("Помилка видалення: " + err.message);
+                                e.currentTarget.innerText = "🗑️ Видалити цей звіт";
+                                e.currentTarget.disabled = false;
+                            }
+                        }
+                    });
+
                     container.appendChild(card);
                 });
 
             } catch (error) {
                 container.innerHTML = `
                     <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-center">
-                        <strong class="block font-bold mb-1">Помилка завантаження з бази даних!</strong>
+                        <strong class="block font-bold mb-1">Помилка завантаження!</strong>
                         <p class="text-sm font-mono">${error.message}</p>
                     </div>`;
             }
         }
 
         document.getElementById('btn-refresh').addEventListener('click', loadReports);
-        
-        // Ініціалізація списку при завантаженні сторінки
         loadReports();
     </script>
 </body>
