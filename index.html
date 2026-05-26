@@ -9,7 +9,7 @@
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
     <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список</h1>
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список (Звітність)</h1>
         <div id="checklist-container" class="space-y-6">
             <p class="text-center text-gray-500">Завантаження даних...</p>
         </div>
@@ -22,6 +22,11 @@
             
             <div class="space-y-4">
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Хто проводить перевірку? (ПІБ)</label>
+                    <input type="text" id="modal-inspector" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть ваше прізвище...">
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Додаткова інформація / Коментар</label>
                     <textarea id="modal-info" rows="3" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть нотатки..."></textarea>
                 </div>
@@ -32,13 +37,10 @@
                     <div id="modal-photo-preview" class="mt-3 hidden">
                         <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover w-full">
                     </div>
-                    <button id="btn-delete-photo" class="w-full mt-2 bg-red-100 hover:bg-red-200 text-red-600 font-medium py-1.5 rounded-lg transition text-sm hidden">
-                        ❌ Видалити фотодоказ
-                    </button>
                 </div>
                 
-                <button id="btn-save" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">
-                    Зберегти зміни
+                <button id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition">
+                    🚀 Надіслати звіт (Зберегти окремо)
                 </button>
             </div>
         </div>
@@ -46,7 +48,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Додали корисну функцію addDoc для створення нових записів
+        import { getFirestore, collection, getDocs, doc, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
@@ -88,32 +91,20 @@
                         const taskRow = document.createElement('div');
                         taskRow.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 transition cursor-pointer shadow-xs";
                         
-                        taskRow.addEventListener('click', (e) => {
-                            if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
+                        taskRow.addEventListener('click', () => {
+                            openModal(sectionId, taskId, taskData);
                         });
 
                         const taskTitle = taskData.text || taskData.title || "Завдання";
-                        const isDone = taskData.Завершено === true || taskData.isCompleted === true;
 
                         taskRow.innerHTML = `
                             <div class="flex items-center space-x-3">
-                                <input type="checkbox" ${isDone ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
-                                <span class="font-medium ${isDone ? 'line-through text-gray-400' : 'text-gray-700'}">${taskTitle}</span>
+                                <span class="font-medium text-gray-700">${taskTitle}</span>
                             </div>
                             <div class="text-xs text-gray-400 flex items-center space-x-2">
-                                ${taskData.additionalInfo ? '📝' : ''}
-                                ${taskData.photoUrl ? '🖼️' : ''}
-                                <span class="bg-gray-100 px-2 py-1 rounded">Деталі</span>
+                                <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded font-medium">Заповнити звіт</span>
                             </div>
                         `;
-
-                        taskRow.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
-                            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { 
-                                "Завершено": e.target.checked,
-                                isCompleted: e.target.checked
-                            });
-                        });
-
                         tasksListContainer.appendChild(taskRow);
                     });
                 }
@@ -123,48 +114,14 @@
         function openModal(sectionId, taskId, taskData) {
             currentActiveTask = { sectionId, taskId, taskData };
             document.getElementById('modal-task-title').innerText = taskData.text || taskData.title || "Деталі";
-            document.getElementById('modal-info').value = taskData.additionalInfo || '';
             
-            const imgPreview = document.getElementById('modal-photo-preview');
-            const img = document.getElementById('modal-img');
-            const btnDelete = document.getElementById('btn-delete-photo');
+            // Очищаємо поля для нового заповнення
+            document.getElementById('modal-inspector').value = '';
+            document.getElementById('modal-info').value = '';
             document.getElementById('modal-file').value = '';
+            document.getElementById('modal-photo-preview').classId = 'hidden';
             
-            if (taskData.photoUrl) {
-                img.src = taskData.photoUrl;
-                imgPreview.classList.remove('hidden');
-                btnDelete.classList.remove('hidden');
-            } else {
-                imgPreview.classList.add('hidden');
-                btnDelete.classList.add('hidden');
-            }
             document.getElementById('modal').classList.remove('hidden');
-        }
-
-        async function deletePhoto() {
-            if (!currentActiveTask) return;
-            const { sectionId, taskId } = currentActiveTask;
-            
-            if (confirm("Ви впевнені, що хочете видалити цей фотодоказ?")) {
-                const btnDelete = document.getElementById('btn-delete-photo');
-                btnDelete.innerText = "Видалення...";
-                btnDelete.disabled = true;
-
-                try {
-                    await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), {
-                        photoUrl: ""
-                    });
-                    
-                    document.getElementById('modal-photo-preview').classList.add('hidden');
-                    btnDelete.classList.add('hidden');
-                    currentActiveTask.taskData.photoUrl = "";
-                } catch (err) {
-                    alert("Помилка видалення: " + err.message);
-                } finally {
-                    btnDelete.innerText = "❌ Видалити фотодоказ";
-                    btnDelete.disabled = false;
-                }
-            }
         }
 
         function resizeAndConvertToBase64(file) {
@@ -176,7 +133,7 @@
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400;
+                        const MAX_WIDTH = 500; // Трохи збільшили якість
                         let width = img.width;
                         let height = img.height;
 
@@ -189,41 +146,56 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.4));
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
                     };
                 };
                 reader.onerror = error => reject(error);
             });
         }
 
+        // НОВА ЛОГІКА: ЗБЕРЕЖЕННЯ ОКРЕМЫМ ДОКУМЕНТОМ
         async function saveModalData() {
             if (!currentActiveTask) return;
-            const { sectionId, taskId } = currentActiveTask;
             
+            const inspectorName = document.getElementById('modal-inspector').value.trim();
+            if (!inspectorName) {
+                alert("Будь ласка, вкажіть, хто проводить перевірку (ПІБ)!");
+                return;
+            }
+
             const btnSave = document.getElementById('btn-save');
-            btnSave.innerText = "Зберігання...";
+            btnSave.innerText = "Відправка звіту...";
             btnSave.disabled = true;
 
-            const updatedData = { 
-                additionalInfo: document.getElementById('modal-info').value
+            // Формуємо окремий звіт
+            const reportData = {
+                taskTitle: currentActiveTask.taskData.text || currentActiveTask.taskData.title,
+                sectionId: currentActiveTask.sectionId,
+                taskId: currentActiveTask.taskId,
+                inspector: inspectorName,
+                additionalInfo: document.getElementById('modal-info').value,
+                submittedAt: new Date().toISOString(), // Час відправки
+                photoUrl: ""
             };
 
             const fileInput = document.getElementById('modal-file');
             if (fileInput.files.length > 0) {
                 try {
-                    updatedData.photoUrl = await resizeAndConvertToBase64(fileInput.files[0]);
+                    reportData.photoUrl = await resizeAndConvertToBase64(fileInput.files[0]);
                 } catch (error) {
-                    alert("Помилка фото: " + error.message);
+                    alert("Помилка обробки фото: " + error.message);
                 }
             }
 
             try {
-                await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), updatedData);
+                // СВЯТИНЯ: Зберігаємо в окрему таблицю (колекцію) 'submitted_reports'
+                await addDoc(collection(db, "submitted_reports"), reportData);
+                alert("Звіт успішно збережено окремо! Форма знову вільна.");
                 closeModal();
             } catch (err) {
-                alert("Помилка Firestore: " + err.message);
+                alert("Помилка Firebase: " + err.message);
             } finally {
-                btnSave.innerText = "Зберегти зміни";
+                btnSave.innerText = "🚀 Надіслати звіт (Зберегти окремо)";
                 btnSave.disabled = false;
             }
         }
@@ -233,9 +205,20 @@
             currentActiveTask = null;
         }
 
+        // Автоматичне прев'ю при виборі файлу
+        document.getElementById('modal-file').addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('modal-img').src = e.target.result;
+                    document.getElementById('modal-photo-preview').classList.remove('hidden');
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
         document.getElementById('btn-close').addEventListener('click', closeModal);
         document.getElementById('btn-save').addEventListener('click', saveModalData);
-        document.getElementById('btn-delete-photo').addEventListener('click', deletePhoto);
         loadChecklist();
     </script>
 </body>
