@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Журнал комплексних перевірок</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-8 text-slate-800">
+<body class="bg-[#f8fafc] min-h-screen p-4 md:p-8 text-slate-800">
 
     <div class="max-w-4xl mx-auto space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-slate-100">
+        <div class="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-slate-100">
             <div>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Журнал комплексних перевірок</h1>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Журнал комплексних перевірок</h1>
                 <p class="text-sm text-slate-500 mt-1">Всі збережені акти перевірок та виявлені порушення з бази Firebase</p>
             </div>
-            <button id="btn-refresh" class="bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold px-5 py-2.5 rounded-xl transition duration-200 shadow-sm shadow-blue-100 flex items-center justify-center space-x-2 shrink-0">
+            <button id="btn-refresh" class="bg-[#1d4ed8] hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center space-x-2 shrink-0">
                 <span>🔄 Оновити дані</span>
             </button>
         </div>
@@ -26,6 +25,8 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -62,7 +63,7 @@
                     reportsArray.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Сортування від найновіших до найстаріших
+                // Сортування: нові зверху
                 reportsArray.sort((a, b) => {
                     const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
                     const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
@@ -85,42 +86,43 @@
 
                     const card = document.createElement('div');
                     card.id = `card-${docId}`;
-                    card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition duration-200 hover:shadow-md";
+                    card.className = "bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.02)] border border-slate-100 overflow-hidden transition duration-200 hover:shadow-md";
 
                     const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
                     const inspectorName = report.inspectorName || 'Не вказано';
 
-                    // Повністю твоя оригінальна структура картки зі збереженням стилістики
                     card.innerHTML = `
-                        <div class="p-5 bg-white flex items-center justify-between cursor-pointer hover:bg-slate-50/80 transition duration-150 toggler-btn select-none">
+                        <div class="p-5 bg-white flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition duration-150 toggler-btn select-none">
                             <div class="space-y-1">
-                                <div class="text-xs font-semibold text-slate-400 font-mono tracking-wider">${reportDate}</div>
-                                <div class="font-bold text-slate-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-600">${inspectorName}</span></div>
+                                <div class="text-xs font-medium text-slate-400 tracking-wide">${reportDate}</div>
+                                <div class="font-bold text-slate-800 text-base md:text-lg">Перевіряючий: <span class="text-[#1d4ed8]">${inspectorName}</span></div>
                             </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-xl border border-blue-100">Пунктів: ${totalItems}</span>
-                                <span class="text-slate-400 text-lg font-bold arrow-icon transition-transform duration-200">▼</span>
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#eff6ff] text-[#1e40af] text-xs font-semibold px-2.5 py-1 rounded-lg border border-blue-100">Пунктів: ${totalItems}</span>
+                                <span class="text-slate-400 text-xs arrow-icon transition-transform duration-200">▼</span>
                             </div>
                         </div>
                         
-                        <div class="px-6 pb-6 hidden content-area border-t border-slate-50 pt-5 space-y-5 bg-white">
+                        <div class="px-6 pb-6 hidden content-area border-t border-slate-50 pt-5 bg-white">
                             
-                            <div id="pdf-area-${docId}" class="space-y-5 bg-white p-1">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono text-slate-400 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
-                                    <div>ID акту: ${docId}</div>
-                                    <div class="md:text-right">Системний маркер: ${report.createdAt || 'немає'}</div>
+                            <div id="pdf-area-${docId}" class="space-y-5 bg-white p-2">
+                                <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 11px; color: #94a3b8; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                                    <div>ID: ${docId}</div>
+                                    <div>Дата акту: ${reportDate}</div>
                                 </div>
                                 
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2">Результати перевірки:</h3>
-                                <div class="space-y-4 block-records-container"></div>
+                                <h3 style="font-size: 16px; font-weight: bold; color: #1e293b; margin-bottom: 15px;">Акт комплексного моніторингу</h3>
+                                <p style="font-size: 14px; color: #334155; margin-bottom: 20px;"><strong>Перевіряючий:</strong> ${inspectorName}</p>
+                                
+                                <div class="block-records-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
                             </div>
 
-                            <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
-                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 active:scale-98 text-blue-600 border border-blue-200/60 text-sm font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
+                            <div class="pt-5 mt-4 border-t border-slate-100 flex justify-end space-x-3">
+                                <button data-id="${docId}" class="btn-pdf-report bg-[#eff6ff] hover:bg-blue-100 text-[#1e40af] border border-blue-200/60 text-xs font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
                                     <span>📥 Завантажити PDF</span>
                                 </button>
-                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 active:scale-98 text-red-600 border border-red-200/60 text-sm font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
-                                    <span>🗑️ Видалити цей звіт</span>
+                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 text-xs font-bold px-4 py-2 rounded-xl transition duration-150 flex items-center space-x-1">
+                                    <span>🗑️ Видалити звіт</span>
                                 </button>
                             </div>
                         </div>
@@ -131,48 +133,58 @@
                     if (report.records && Array.isArray(report.records) && report.records.length > 0) {
                         report.records.forEach((record) => {
                             const itemRow = document.createElement('div');
-                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/10 p-4 rounded-r-2xl space-y-2 border border-slate-100 mb-3 style-pdf-block";
+                            // Використовуємо inline-стилі або базові класи без складних CSS-функцій для PDF-сумісності
+                            itemRow.className = "style-pdf-block";
+                            itemRow.style.borderLeft = "4px solid #f59e0b";
+                            itemRow.style.backgroundColor = "#fffdfa";
+                            itemRow.style.padding = "16px";
+                            itemRow.style.borderRadius = "0 12px 12px 0";
+                            itemRow.style.borderTop = "1px solid #f1f5f9";
+                            itemRow.style.borderRight = "1px solid #f1f5f9";
+                            itemRow.style.borderBottom = "1px solid #f1f5f9";
+                            itemRow.style.marginBottom = "12px";
+                            itemRow.style.pageBreakInside = "avoid";
                             
                             itemRow.innerHTML = `
-                                <h4 class="font-bold text-slate-800 text-sm md:text-base flex items-start">
-                                    <span class="mr-1.5 shrink-0">📌</span> 
+                                <h4 style="font-weight: bold; color: #1e293b; font-size: 14px; margin: 0 0 8px 0; display: flex; align-items: start;">
+                                    <span style="margin-right: 6px;">📌</span> 
                                     <span>${record.taskTitle || 'Пункт перевірки'}</span>
                                 </h4>
-                                ${record.comment ? `<p class="text-slate-600 text-sm whitespace-pre-wrap bg-white p-3 rounded-xl border border-slate-100 shadow-2xs">${record.comment}</p>` : '<p class="text-slate-400 text-xs italic pl-1">Без текстового коментаря</p>'}
+                                ${record.comment ? `
+                                    <div style="background-color: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; white-space: pre-wrap; margin-top: 6px;">${record.comment}</div>
+                                ` : '<p style="color: #94a3b8; font-size: 12px; font-style: italic; margin: 4px 0 0 0;">Без текстового коментаря</p>'}
                                 ${record.photoUrl ? `
-                                    <div class="mt-2 max-w-md">
-                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" class="rounded-xl max-h-64 object-cover border border-slate-200 shadow-2xs">
+                                    <div style="margin-top: 10px; max-w-md;">
+                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" style="border-radius: 8px; max-height: 240px; object-fit: cover; border: 1px solid #cbd5e1;">
                                     </div>
                                 ` : ''}
                             `;
                             recordsContainer.appendChild(itemRow);
                         });
                     } else {
-                        recordsContainer.innerHTML = '<p class="text-slate-400 italic text-sm pl-1">Детальні дані відсутні.</p>';
+                        recordsContainer.innerHTML = '<p style="color: #94a3b8; font-style: italic; font-size: 13px;">Детальні дані про порушення відсутні.</p>';
                     }
 
-                    // Логіка відкриття/закриття
+                    // Логіка аккордеону (відкриття/закриття)
                     const toggler = card.querySelector('.toggler-btn');
                     const content = card.querySelector('.content-area');
                     const arrow = card.querySelector('.arrow-icon');
                     
                     toggler.addEventListener('click', (e) => {
-                        if (e.target.closest('button')) return; // Ігноруємо кліки по кнопках
+                        if (e.target.closest('button')) return;
 
                         if (content.classList.contains('hidden')) {
                             content.classList.remove('hidden');
                             arrow.innerText = '▲';
-                            arrow.classList.remove('text-slate-400');
-                            arrow.classList.add('text-blue-600');
+                            arrow.style.color = '#1d4ed8';
                         } else {
                             content.classList.add('hidden');
                             arrow.innerText = '▼';
-                            arrow.classList.remove('text-blue-600');
-                            arrow.classList.add('text-slate-400');
+                            arrow.style.color = '#94a3b8';
                         }
                     });
 
-                    // Автономна та безпечна генерація PDF
+                    // Автономна та безпечна генерація PDF без багів з кольорами
                     const pdfBtn = card.querySelector('.btn-pdf-report');
                     pdfBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -194,7 +206,7 @@
                         });
                     });
 
-                    // Безпечне видалення звіту
+                    // Функція видалення картки
                     const deleteBtn = card.querySelector('.btn-delete-report');
                     deleteBtn.addEventListener('click', async (e) => {
                         e.stopPropagation();
@@ -213,7 +225,7 @@
                                 }
                             } catch (err) {
                                 alert("Помилка видалення: " + err.message);
-                                e.currentTarget.innerText = "🗑️ Видалити цей звіт";
+                                e.currentTarget.innerText = "🗑️ Видалити звіт";
                                 e.currentTarget.disabled = false;
                             }
                         }
