@@ -2,18 +2,151 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мій Контрольний Список</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
-        .section-box { border-left: 4px solid #1a73e8; background: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 4px; }
-        .section-title { font-weight: bold; font-size: 18px; margin-bottom: 12px; color: #1a73e8; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-        .task-item { display: flex; align-items: center; padding: 8px 0; font-size: 16px; }
-        .task-item input { margin-right: 12px; transform: scale(1.3); cursor: pointer; }
-        /* Ефект закреслення для виконаних завдань */
-        .task-item.completed span { text-decoration: line-through; color: #888; }
-        .no-data { text-align: center; color: #666; font-style: italic; padding: 20px; }
+        /* Базові налаштування сторінки */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; 
+            padding: 24px 16px; 
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        .container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            padding: 32px 24px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+        }
+        
+        /* Головний заголовок */
+        h1 { 
+            text-align: center; 
+            color: #0f172a; 
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 28px; 
+            letter-spacing: -0.5px;
+        }
+
+        /* Стилізація інформаційних повідомлень */
+        #checklist-content {
+            font-size: 15px;
+        }
+        .no-data { 
+            text-align: center; 
+            color: #64748b; 
+            font-style: italic; 
+            padding: 30px; 
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* Окремі блоки/розділи */
+        .section-box { 
+            background: #f8fafc; 
+            border: 1px solid #e2e8f0;
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            transition: all 0.2s ease;
+        }
+        .section-box:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .section-title { 
+            font-weight: 600; 
+            font-size: 16px; 
+            margin-bottom: 14px; 
+            color: #2563eb; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0; 
+            padding-bottom: 6px; 
+        }
+
+        /* Елементи списку (завдання) */
+        .task-item { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 10px 8px; 
+            font-size: 15px; 
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+        .task-item:hover {
+            background: #f1f5f9;
+        }
+        
+        /* Кастомний дизайн чекбоксів */
+        .task-item input[type="checkbox"] { 
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            margin-right: 12px; 
+            margin-top: 1px;
+            flex-shrink: 0;
+            cursor: pointer;
+            display: grid;
+            place-content: center;
+            transition: all 0.15s ease;
+        }
+        .task-item input[type="checkbox"]::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            background-color: #ffffff;
+            /* Малюємо галочку через clip-path */
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .task-item input[type="checkbox"]:checked {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        .task-item input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+        .task-item input[type="checkbox"]:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        /* Текст завдання */
+        .task-item span {
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        /* Ефект для виконаних завдань */
+        .task-item.completed {
+            background: transparent;
+        }
+        .task-item.completed span { 
+            text-decoration: line-through; 
+            color: #94a3b8; 
+        }
     </style>
 </head>
 <body>
@@ -27,7 +160,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ⚠️ ВСТАВТЕ СЮДИ ВАШІ ОСОБИСТІ КЛЮЧІ З FIREBASE (як минулого разу):
         const firebaseConfig = {
             apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
             authDomain: "checklist-144ac.firebaseapp.com",
@@ -44,7 +176,6 @@
             const contentDiv = document.getElementById('checklist-content');
             
             try {
-                // Визначаємо правильну мову назви колекції
                 let collectionName = "розділи";
                 let sectionsSnapshot = await getDocs(collection(db, collectionName));
                 if (sectionsSnapshot.empty) {
@@ -67,7 +198,6 @@
                     sectionBox.className = 'section-box';
                     sectionBox.innerHTML = `<div class="section-title">${blockTitle}</div>`;
 
-                    // Визначаємо правильну назву підколекції завдань
                     let taskCollectionName = "завдання";
                     let tasksSnapshot = await getDocs(collection(db, collectionName, sectionDoc.id, taskCollectionName));
                     if (tasksSnapshot.empty) {
@@ -81,38 +211,30 @@
                         const isDone = taskData.isCompleted === true || taskData.Завершено === true;
                         const taskText = taskData.text || taskData.текст || "Пусте завдання";
 
-                        const taskItem = document.createElement('div');
-                        // Якщо завдання вже виконано в базі, додаємо клас красивого закреслення тексту
+                        const taskItem = document.createElement('label'); // Змінено на label для зручності кліку по тексту
                         taskItem.className = `task-item ${isDone ? 'completed' : ''}`;
                         
-                        // Створюємо саму галочку та текст
                         taskItem.innerHTML = `
                             <input type="checkbox" ${isDone ? 'checked' : ''}>
                             <span>${taskText}</span>
                         `;
 
-                        // Знаходимо інтерактивний квадратик усередині цього пункту
                         const checkbox = taskItem.querySelector('input');
                         
-                        // ХИТРА КОМАНДА: Що робити, коли користувач клікає на квадратик
                         checkbox.addEventListener('change', async () => {
                             const newStatus = checkbox.checked;
                             
-                            // Змінюємо зовнішній вигляд (закреслюємо або повертаємо звичайний текст)
                             if (newStatus) {
                                 taskItem.classList.add('completed');
                             } else {
                                 taskItem.classList.remove('completed');
                             }
 
-                            // Прямий шлях до цього конкретного завдання в хмарі Firebase
                             const taskDocRef = doc(db, collectionName, sectionDoc.id, taskCollectionName, taskDoc.id);
                             
                             try {
-                                // Оновлюємо статус в базі даних у реальному часі!
                                 await updateDoc(taskDocRef, {
                                     isCompleted: newStatus,
-                                    // Про всяк випадок оновлюємо обидва варіанти назв, якщо база перекладена
                                     ...(taskData.hasOwnProperty('Завершено') && { Завершено: newStatus })
                                 });
                                 console.log("Статус успішно змінено в Firebase!");
@@ -128,7 +250,7 @@
                 }
             } catch (error) {
                 console.error("Помилка:", error);
-                contentDiv.innerHTML = `<div class="no-data" style="color:red;">Помилка зв'язку: ${error.message}</div>`;
+                contentDiv.innerHTML = `<div class="no-data" style="color:#ef4444; border-color:#fca5a5;">Помилка зв'язку: ${error.message}</div>`;
             }
         }
 
