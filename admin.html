@@ -89,6 +89,7 @@
                     const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
                     const inspectorNameClean = report.inspectorName || 'Не вказано';
 
+                    // Залишаємо оригінальну структуру картки, яка працювала без збоїв
                     card.innerHTML = `
                         <div class="p-4 bg-gray-50 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-100/70 transition toggler-btn">
                             <div class="space-y-1">
@@ -102,90 +103,15 @@
                         </div>
                         
                         <div class="p-6 hidden content-area bg-white space-y-4">
-                            <div id="pdf-area-${docId}" class="p-1 space-y-4 bg-white">
-                                <div class="hidden pdf-only border-b-2 border-blue-600 pb-3 mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800">АКТ КОМПЛЕКСНОЇ ПЕРЕВІРКИ</h2>
-                                    <p class="text-sm text-gray-500">Згенеровано автоматично з системи моніторингу</p>
-                                </div>
-
+                            <div id="pdf-area-${docId}" class="space-y-4 bg-white p-1">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                    <div><strong>Перевіряючий:</strong> ${inspectorNameClean}</div>
-                                    <div><strong>Дата формування:</strong> ${reportDate}</div>
-                                    <div><strong>ID акту:</strong> ${docId}</div>
-                                    <div class="md:text-right hidden md:block"><strong>Системний час:</strong> ${report.createdAt}</div>
+                                    <div>ID акту: ${docId}</div>
+                                    <div class="md:text-right">Системний час: ${report.createdAt}</div>
                                 </div>
                                 
-                                <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки та виявлені недоліки:</h3>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки:</h3>
                                 <div class="space-y-4 block-records-container"></div>
                             </div>
 
-                            <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-2 justify-end">
-                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
-                                    <span>📥 Завантажити PDF</span>
-                                </button>
-                                <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
-                                    <span>🗑️ Видалити цей звіт</span>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-
-                    const recordsContainer = card.querySelector('.block-records-container');
-
-                    if (report.records && Array.isArray(report.records) && report.records.length > 0) {
-                        report.records.forEach((record) => {
-                            const itemRow = document.createElement('div');
-                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100 mb-2 page-break-inside-avoid";
-                            
-                            // Використовуємо crossOrigin атрибут для коректного рендерингу Base64 або зовнішніх картинок у PDF
-                            itemRow.innerHTML = `
-                                <h4 class="font-bold text-gray-800 text-sm md:text-base">📌 ${record.taskTitle || 'Пункт перевірки'}</h4>
-                                ${record.comment ? `<p class="text-gray-700 text-sm whitespace-pre-wrap bg-white p-2.5 rounded-lg border border-gray-200 shadow-2xs">${record.comment}</p>` : '<p class="text-gray-400 text-xs italic">Без текстового коментаря</p>'}
-                                ${record.photoUrl ? `
-                                    <div class="mt-2 max-w-md">
-                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs">
-                                    </div>
-                                ` : ''}
-                            `;
-                            recordsContainer.appendChild(itemRow);
-                        });
-                    } else {
-                        recordsContainer.innerHTML = '<p class="text-gray-400 italic text-sm">Детальні дані відсутні.</p>';
-                    }
-
-                    const toggler = card.querySelector('.toggler-btn');
-                    const content = card.querySelector('.content-area');
-                    const arrow = card.querySelector('.arrow-icon');
-                    
-                    toggler.addEventListener('click', (e) => {
-                        if (content.classList.contains('hidden')) {
-                            content.classList.remove('hidden');
-                            arrow.innerText = '▲';
-                            arrow.classList.remove('text-gray-400');
-                            arrow.classList.add('text-blue-600');
-                        } else {
-                            content.classList.add('hidden');
-                            arrow.innerText = '▼';
-                            arrow.classList.remove('text-blue-600');
-                            arrow.classList.add('text-gray-400');
-                        }
-                    });
-
-                    // Логіка експорту в PDF
-                    const pdfBtn = card.querySelector('.btn-pdf-report');
-                    pdfBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        
-                        const element = document.getElementById(`pdf-area-${docId}`);
-                        
-                        // Тимчасово показуємо заголовок, призначений суто для друкованої версії
-                        const pdfHeader = element.querySelector('.pdf-only');
-                        if (pdfHeader) pdfHeader.classList.remove('hidden');
-
-                        // Налаштування конфігурації PDF документа
-                        const opt = {
-                            margin:       [15, 15, 15, 15], // відступи [верх, ліво, низ, право]
-                            filename:     `Звіт_перевірки_${inspectorNameClean.replace(/\s+/g, '_')}_${reportDate.split(',')[0]}.pdf`,
-                            image:        { type: 'jpeg', quality: 0.98 },
-                            html2canvas:  { scale: 2, useCORS: true, logging: false },
-                            jsPDF:        { unit
+                            <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
+                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-
