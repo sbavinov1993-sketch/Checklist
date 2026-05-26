@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель звітів перевірок</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
@@ -28,7 +29,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Додано deleteDoc та doc для видалення записів
         import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -57,7 +57,6 @@
                     return;
                 }
 
-                // Сортування в браузері (як у твоїй робочій версії)
                 const reportsArray = [];
                 querySnapshot.forEach((doc) => {
                     reportsArray.push({ id: doc.id, ...doc.data() });
@@ -88,13 +87,13 @@
                     card.className = "bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg";
 
                     const totalItems = report.totalItemsChecked || (report.records ? report.records.length : 0);
+                    const inspectorNameClean = report.inspectorName || 'Не вказано';
 
-                    // Структура картки повністю ідентична твоїй робочій версії, але з доданою кнопкою внизу
                     card.innerHTML = `
                         <div class="p-4 bg-gray-50 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-100/70 transition toggler-btn">
                             <div class="space-y-1">
                                 <div class="text-sm text-gray-400 font-mono">${reportDate}</div>
-                                <div class="font-bold text-gray-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-700">${report.inspectorName || 'Не вказано'}</span></div>
+                                <div class="font-bold text-gray-800 text-base md:text-lg">Перевіряючий: <span class="text-blue-700">${inspectorNameClean}</span></div>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">Пунктів: ${totalItems}</span>
@@ -103,15 +102,27 @@
                         </div>
                         
                         <div class="p-6 hidden content-area bg-white space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                <div>ID акту: ${docId}</div>
-                                <div class="md:text-right">Системний час: ${report.createdAt}</div>
-                            </div>
-                            
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки:</h3>
-                            <div class="space-y-4 block-records-container"></div>
+                            <div id="pdf-area-${docId}" class="p-1 space-y-4 bg-white">
+                                <div class="hidden pdf-only border-b-2 border-blue-600 pb-3 mb-4">
+                                    <h2 class="text-xl font-bold text-gray-800">АКТ КОМПЛЕКСНОЇ ПЕРЕВІРКИ</h2>
+                                    <p class="text-sm text-gray-500">Згенеровано автоматично з системи моніторингу</p>
+                                </div>
 
-                            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <div><strong>Перевіряючий:</strong> ${inspectorNameClean}</div>
+                                    <div><strong>Дата формування:</strong> ${reportDate}</div>
+                                    <div><strong>ID акту:</strong> ${docId}</div>
+                                    <div class="md:text-right hidden md:block"><strong>Системний час:</strong> ${report.createdAt}</div>
+                                </div>
+                                
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 border-b pb-2">Результати перевірки та виявлені недоліки:</h3>
+                                <div class="space-y-4 block-records-container"></div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-2 justify-end">
+                                <button data-id="${docId}" class="btn-pdf-report bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
+                                    <span>📥 Завантажити PDF</span>
+                                </button>
                                 <button data-id="${docId}" class="btn-delete-report bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center space-x-1">
                                     <span>🗑️ Видалити цей звіт</span>
                                 </button>
@@ -124,14 +135,15 @@
                     if (report.records && Array.isArray(report.records) && report.records.length > 0) {
                         report.records.forEach((record) => {
                             const itemRow = document.createElement('div');
-                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100 mb-2";
+                            itemRow.className = "border-l-4 border-amber-500 bg-amber-50/20 p-4 rounded-r-xl space-y-2 border border-gray-100 mb-2 page-break-inside-avoid";
                             
+                            // Використовуємо crossOrigin атрибут для коректного рендерингу Base64 або зовнішніх картинок у PDF
                             itemRow.innerHTML = `
                                 <h4 class="font-bold text-gray-800 text-sm md:text-base">📌 ${record.taskTitle || 'Пункт перевірки'}</h4>
                                 ${record.comment ? `<p class="text-gray-700 text-sm whitespace-pre-wrap bg-white p-2.5 rounded-lg border border-gray-200 shadow-2xs">${record.comment}</p>` : '<p class="text-gray-400 text-xs italic">Без текстового коментаря</p>'}
                                 ${record.photoUrl ? `
                                     <div class="mt-2 max-w-md">
-                                        <img src="${record.photoUrl}" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs">
+                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" class="rounded-lg max-h-64 object-cover border border-gray-300 shadow-2xs">
                                     </div>
                                 ` : ''}
                             `;
@@ -159,47 +171,21 @@
                         }
                     });
 
-                    // Логіка кнопки видалення
-                    const deleteBtn = card.querySelector('.btn-delete-report');
-                    deleteBtn.addEventListener('click', async (e) => {
-                        e.stopPropagation(); // Щоб картка не згорталася при кліку на кнопку
-                        const id = e.currentTarget.getAttribute('data-id');
-                        const inspectorName = report.inspectorName || "Не вказано";
+                    // Логіка експорту в PDF
+                    const pdfBtn = card.querySelector('.btn-pdf-report');
+                    pdfBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         
-                        if (confirm(`Ви дійсно хочете видалити звіт від: ${inspectorName}?`)) {
-                            e.currentTarget.innerText = "Видалення...";
-                            e.currentTarget.disabled = true;
-                            
-                            try {
-                                await deleteDoc(doc(db, "submitted_reports", id));
-                                document.getElementById(`card-${id}`).remove();
-                                alert("Звіт успішно видалено з бази.");
-                                
-                                if (container.children.length === 0) {
-                                    container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-gray-500 shadow-xs">📭 Жодного звіту не знайдено.</div>`;
-                                }
-                            } catch (err) {
-                                alert("Помилка видалення: " + err.message);
-                                e.currentTarget.innerText = "🗑️ Видалити цей звіт";
-                                e.currentTarget.disabled = false;
-                            }
-                        }
-                    });
+                        const element = document.getElementById(`pdf-area-${docId}`);
+                        
+                        // Тимчасово показуємо заголовок, призначений суто для друкованої версії
+                        const pdfHeader = element.querySelector('.pdf-only');
+                        if (pdfHeader) pdfHeader.classList.remove('hidden');
 
-                    container.appendChild(card);
-                });
-
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-center">
-                        <strong class="block font-bold mb-1">Помилка завантаження!</strong>
-                        <p class="text-sm font-mono">${error.message}</p>
-                    </div>`;
-            }
-        }
-
-        document.getElementById('btn-refresh').addEventListener('click', loadReports);
-        loadReports();
-    </script>
-</body>
-</html>
+                        // Налаштування конфігурації PDF документа
+                        const opt = {
+                            margin:       [15, 15, 15, 15], // відступи [верх, ліво, низ, право]
+                            filename:     `Звіт_перевірки_${inspectorNameClean.replace(/\s+/g, '_')}_${reportDate.split(',')[0]}.pdf`,
+                            image:        { type: 'jpeg', quality: 0.98 },
+                            html2canvas:  { scale: 2, useCORS: true, logging: false },
+                            jsPDF:        { unit
