@@ -105,16 +105,17 @@
                         
                         <div class="px-6 pb-6 hidden content-area border-t border-slate-50 pt-5 bg-white">
                             
-                            <div id="pdf-area-${docId}" class="space-y-5 bg-white p-2">
-                                <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 11px; color: #94a3b8; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
-                                    <div>ID: ${docId}</div>
-                                    <div>Дата акту: ${reportDate}</div>
+                            <div id="pdf-area-${docId}" class="bg-white p-2" style="display: block; width: 100%;">
+                                <div style="display: block; font-family: monospace; font-size: 11px; color: #94a3b8; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                                    <span style="float: left;">ID: ${docId}</span>
+                                    <span style="float: right;">Дата акту: ${reportDate}</span>
+                                    <div style="clear: both;"></div>
                                 </div>
                                 
-                                <h3 style="font-size: 16px; font-weight: bold; color: #1e293b; margin-bottom: 15px;">Акт комплексного моніторингу</h3>
-                                <p style="font-size: 14px; color: #334155; margin-bottom: 20px;"><strong>Перевіряючий:</strong> ${inspectorName}</p>
+                                <h3 style="font-size: 18px; font-weight: bold; color: #1e293b; margin-top: 10px; margin-bottom: 10px; display: block;">Акт комплексного моніторингу</h3>
+                                <p style="font-size: 14px; color: #334155; margin-bottom: 20px; display: block;"><strong>Перевіряючий:</strong> ${inspectorName}</p>
                                 
-                                <div class="block-records-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                                <div class="block-records-container" style="display: block;"></div>
                             </div>
 
                             <div class="pt-5 mt-4 border-t border-slate-100 flex justify-end space-x-3">
@@ -133,8 +134,10 @@
                     if (report.records && Array.isArray(report.records) && report.records.length > 0) {
                         report.records.forEach((record) => {
                             const itemRow = document.createElement('div');
-                            // Використовуємо inline-стилі або базові класи без складних CSS-функцій для PDF-сумісності
                             itemRow.className = "style-pdf-block";
+                            
+                            // Застосовуємо виключно сумісні з блочним рендером PDF стилі
+                            itemRow.style.display = "block";
                             itemRow.style.borderLeft = "4px solid #f59e0b";
                             itemRow.style.backgroundColor = "#fffdfa";
                             itemRow.style.padding = "16px";
@@ -142,27 +145,26 @@
                             itemRow.style.borderTop = "1px solid #f1f5f9";
                             itemRow.style.borderRight = "1px solid #f1f5f9";
                             itemRow.style.borderBottom = "1px solid #f1f5f9";
-                            itemRow.style.marginBottom = "12px";
-                            itemRow.style.pageBreakInside = "avoid";
+                            itemRow.style.marginBottom = "16px";
                             
                             itemRow.innerHTML = `
-                                <h4 style="font-weight: bold; color: #1e293b; font-size: 14px; margin: 0 0 8px 0; display: flex; align-items: start;">
+                                <h4 style="font-weight: bold; color: #1e293b; font-size: 14px; margin: 0 0 8px 0; display: block;">
                                     <span style="margin-right: 6px;">📌</span> 
                                     <span>${record.taskTitle || 'Пункт перевірки'}</span>
                                 </h4>
                                 ${record.comment ? `
-                                    <div style="background-color: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; white-space: pre-wrap; margin-top: 6px;">${record.comment}</div>
-                                ` : '<p style="color: #94a3b8; font-size: 12px; font-style: italic; margin: 4px 0 0 0;">Без текстового коментаря</p>'}
+                                    <div style="background-color: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; white-space: pre-wrap; margin-top: 6px; display: block;">${record.comment}</div>
+                                ` : '<p style="color: #94a3b8; font-size: 12px; font-style: italic; margin: 4px 0 0 0; display: block;">Без текстового коментаря</p>'}
                                 ${record.photoUrl ? `
-                                    <div style="margin-top: 10px; max-w-md;">
-                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" style="border-radius: 8px; max-height: 240px; object-fit: cover; border: 1px solid #cbd5e1;">
+                                    <div style="margin-top: 12px; display: block; max-w-md;">
+                                        <img src="${record.photoUrl}" crossOrigin="anonymous" alt="Фотофіксація" style="border-radius: 8px; max-height: 220px; object-fit: cover; border: 1px solid #cbd5e1; display: block;">
                                     </div>
                                 ` : ''}
                             `;
                             recordsContainer.appendChild(itemRow);
                         });
                     } else {
-                        recordsContainer.innerHTML = '<p style="color: #94a3b8; font-style: italic; font-size: 13px;">Детальні дані про порушення відсутні.</p>';
+                        recordsContainer.innerHTML = '<p style="color: #94a3b8; font-style: italic; font-size: 13px; display: block;">Детальні дані про порушення відсутні.</p>';
                     }
 
                     // Логіка аккордеону (відкриття/закриття)
@@ -184,7 +186,7 @@
                         }
                     });
 
-                    // Автономна та безпечна генерація PDF без багів з кольорами
+                    // Генерація багатосторінкового PDF
                     const pdfBtn = card.querySelector('.btn-pdf-report');
                     pdfBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -193,12 +195,13 @@
                         const nameFile = `Zvit_${inspectorName.replace(/\s+/g, '_')}_${reportDate.split(',')[0].replace(/\./g, '_')}.pdf`;
                         
                         const opt = {
-                            margin:       [12, 12, 12, 12],
+                            margin:       [15, 15, 15, 15],
                             filename:     nameFile,
                             image:        { type: 'jpeg', quality: 0.98 },
                             html2canvas:  { scale: 2, useCORS: true, logging: false },
                             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                            pagebreak:    { mode: ['css', 'legacy'], avoid: '.style-pdf-block' }
+                            // Налаштування розумного автоматичного переносу блоків на наступні сторінки
+                            pagebreak:    { mode: ['css', 'legacy'], before: '.style-pdf-block' }
                         };
 
                         html2pdf().set(opt).from(element).save().catch(err => {
@@ -206,7 +209,7 @@
                         });
                     });
 
-                    // Функція видалення картки
+                    // Функція видалення звіту
                     const deleteBtn = card.querySelector('.btn-delete-report');
                     deleteBtn.addEventListener('click', async (e) => {
                         e.stopPropagation();
@@ -246,5 +249,3 @@
         document.getElementById('btn-refresh').addEventListener('click', loadReports);
         loadReports();
     </script>
-</body>
-</html>
