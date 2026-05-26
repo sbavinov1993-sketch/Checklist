@@ -11,26 +11,25 @@
     <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
         <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">Контрольний список</h1>
         <div id="checklist-container" class="space-y-6">
-            <p class="text-center text-gray-500">Завантаження розділів...</p>
+            <p class="text-center text-gray-500">Завантаження даних...</p>
         </div>
     </div>
 
     <div id="modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
-            <h3 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-4">Назва завдання</h3>
+            <button id="btn-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+            <h3 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-4">Назва</h3>
             
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Додаткова інформація / Коментар</label>
-                    <textarea id="modal-info" rows="3" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть нотатки тут..."></textarea>
+                    <textarea id="modal-info" rows="3" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Введіть нотатки..."></textarea>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Фотодоказ</label>
                     <input type="file" id="modal-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     <div id="modal-photo-preview" class="mt-3 hidden">
-                        <p class="text-xs text-gray-500 mb-1">Завантажене фото:</p>
                         <img id="modal-img" src="" alt="Прев'ю" class="max-h-48 rounded-lg object-cover w-full">
                     </div>
                 </div>
@@ -46,7 +45,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ТВОЇ ОФІЦІЙНІ НАЛАШТУВАННЯ (РЯДОК STORAGE ПРИБРАНО)
         const firebaseConfig = {
             apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
             authDomain: "checklist-144ac.firebaseapp.com",
@@ -64,18 +62,12 @@
                 const container = document.getElementById('checklist-container');
                 container.innerHTML = '';
 
-                if(querySnapshot.empty) {
-                    container.innerHTML = '<p class="text-center text-gray-500">Додайте структуру в Firestore.</p>';
-                    return;
-                }
-
                 for (const sectionDoc of querySnapshot.docs) {
                     const sectionData = sectionDoc.data();
                     const sectionHtml = document.createElement('div');
                     sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm mb-4";
                     
-                    // Адаптуємо під твої поля title або text
-                    const sectionTitle = sectionData.title || sectionData.text || 'Умови зберігання речових доказів';
+                    const sectionTitle = sectionData.title || sectionData.text || 'Розділ';
                     sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionTitle}</h2>`;
                     
                     const tasksListContainer = document.createElement('div');
@@ -97,7 +89,6 @@
                             if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
                         });
 
-                        // Твоя база використовує поле "text" та "Завершено"
                         const taskTitle = taskData.text || taskData.title || "Завдання";
                         const isDone = taskData.Завершено === true || taskData.isCompleted === true;
 
@@ -144,7 +135,6 @@
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        // КЛЮЧОВА ФУНКЦІЯ: Стискає фото і перетворює на текст для збереження у Firestore
         function resizeAndConvertToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -154,7 +144,7 @@
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400; // Робимо картинку компактною для бази даних
+                        const MAX_WIDTH = 400;
                         let width = img.width;
                         let height = img.height;
 
@@ -167,9 +157,7 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.4); // 40% якості, щоб не перевантажувати документ
-                        resolve(dataUrl);
+                        resolve(canvas.toDataURL('image/jpeg', 0.4));
                     };
                 };
                 reader.onerror = error => reject(error);
@@ -184,19 +172,16 @@
             btnSave.innerText = "Зберігання...";
             btnSave.disabled = true;
 
-            const infoText = document.getElementById('modal-info').value;
-            const fileInput = document.getElementById('modal-file');
-            
-            let updatedData = { 
-                additionalInfo: infoText
+            const updatedData = { 
+                additionalInfo: document.getElementById('modal-info').value
             };
 
+            const fileInput = document.getElementById('modal-file');
             if (fileInput.files.length > 0) {
                 try {
-                    const compressedBase64 = await resizeAndConvertToBase64(fileInput.files[0]);
-                    updatedData.photoUrl = compressedBase64;
+                    updatedData.photoUrl = await resizeAndConvertToBase64(fileInput.files[0]);
                 } catch (error) {
-                    alert("Помилка обробки зображення: " + error.message);
+                    alert("Помилка фото: " + error.message);
                 }
             }
 
@@ -216,7 +201,7 @@
             currentActiveTask = null;
         }
 
-        window.closeModal = closeModal;
+        document.getElementById('btn-close').addEventListener('click', closeModal);
         document.getElementById('btn-save').addEventListener('click', saveModalData);
         loadChecklist();
     </script>
