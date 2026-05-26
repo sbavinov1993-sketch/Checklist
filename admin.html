@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Журнал комплексних перевірок</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Додатковий CSS-захист від розрізання картки пункту навпіл */
+        .style-pdf-block {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+    </style>
 </head>
 <body class="bg-[#f8fafc] min-h-screen p-4 md:p-8 text-slate-800">
 
@@ -136,7 +143,6 @@
                             const itemRow = document.createElement('div');
                             itemRow.className = "style-pdf-block";
                             
-                            // Застосовуємо виключно сумісні з блочним рендером PDF стилі
                             itemRow.style.display = "block";
                             itemRow.style.borderLeft = "4px solid #f59e0b";
                             itemRow.style.backgroundColor = "#fffdfa";
@@ -200,8 +206,8 @@
                             image:        { type: 'jpeg', quality: 0.98 },
                             html2canvas:  { scale: 2, useCORS: true, logging: false },
                             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                            // Налаштування розумного автоматичного переносу блоків на наступні сторінки
-                            pagebreak:    { mode: ['css', 'legacy'], before: '.style-pdf-block' }
+                            // Змінено 'before' на 'avoid', щоб пункти йшли щільним списком без порожніх сторінок
+                            pagebreak:    { mode: ['css', 'legacy'], avoid: '.style-pdf-block' }
                         };
 
                         html2pdf().set(opt).from(element).save().catch(err => {
