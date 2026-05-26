@@ -60,7 +60,6 @@
         const db = getFirestore(app);
         let currentActiveTask = null;
 
-        // Функція завантаження та відображення чек-ліста
         function loadChecklist() {
             onSnapshot(collection(db, "sections"), async (querySnapshot) => {
                 const container = document.getElementById('checklist-container');
@@ -75,7 +74,7 @@
                     const sectionData = sectionDoc.data();
                     const sectionHtml = document.createElement('div');
                     sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm";
-                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || 'Розділ'}</h2>`;
+                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || sectionData.text || 'Розділ'}</h2>`;
                     
                     const tasksListContainer = document.createElement('div');
                     tasksListContainer.className = "space-y-2";
@@ -96,10 +95,13 @@
                             if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
                         });
 
+                        // Підтримка як англійських полів, так і поля "текст" зі скріншоту
+                        const taskTitle = taskData.title || taskData.text || "Завдання";
+
                         taskRow.innerHTML = `
                             <div class="flex items-center space-x-3">
-                                <input type="checkbox" ${taskData.isCompleted ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
-                                <span class="font-medium ${taskData.isCompleted ? 'line-through text-gray-400' : 'text-gray-700'}">${taskData.title}</span>
+                                <input type="checkbox" ${taskData.isCompleted || taskData.Завершено ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
+                                <span class="font-medium ${taskData.isCompleted || taskData.Завершено ? 'line-through text-gray-400' : 'text-gray-700'}">${taskTitle}</span>
                             </div>
                             <div class="text-xs text-gray-400 flex items-center space-x-2">
                                 ${taskData.additionalInfo ? '📝' : ''}
@@ -109,7 +111,10 @@
                         `;
 
                         taskRow.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
-                            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { isCompleted: e.target.checked });
+                            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { 
+                                isCompleted: e.target.checked,
+                                "Завершено": e.target.checked // Для сумісності з вашим старим полем
+                            });
                         });
 
                         tasksListContainer.appendChild(taskRow);
@@ -120,7 +125,7 @@
 
         function openModal(sectionId, taskId, taskData) {
             currentActiveTask = { sectionId, taskId, taskData };
-            document.getElementById('modal-task-title').innerText = taskData.title;
+            document.getElementById('modal-task-title').innerText = taskData.title || taskData.text || "Завдання";
             document.getElementById('modal-info').value = taskData.additionalInfo || '';
             
             const imgPreview = document.getElementById('modal-photo-preview');
@@ -136,17 +141,47 @@
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        // Функція стиснення та конвертації фото в текст (Base64)
-        function convertFileToBase64(file) {
+        // НОВА ФУНКЦІЯ: Стиснення фото + конвертація в Base64 текст
+        function resizeAndConvertToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; // Оптимальна ширина для мобільних екранів
+                        const MAX_HEIGHT = 600;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2canvas' in canvas ? '2d' : '2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Конвертуємо в JPEG з якістю 70% (ідеально для сильного стиснення без втрати деталізації)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(dataUrl);
+                    };
+                };
                 reader.onerror = error => reject(error);
             });
         }
 
-        // Функція збереження даних
         async function saveModalData() {
             if (!currentActiveTask) return;
             const { sectionId, taskId } = currentActiveTask;
@@ -158,19 +193,25 @@
             const infoText = document.getElementById('modal-info').value;
             const fileInput = document.getElementById('modal-file');
             
-            let updatedData = { additionalInfo: infoText };
+            let updatedData = { 
+                additionalInfo: infoText
+            };
 
             if (fileInput.files.length > 0) {
                 try {
-                    // Конвертуємо файл прямо в текст і пишемо в Firestore
-                    const base64String = await convertFileToBase64(fileInput.files[0]);
-                    updatedData.photoUrl = base64String;
+                    // Стискаємо і перетворюємо в текст
+                    const compressedBase64 = await resizeAndConvertToBase64(fileInput.files[0]);
+                    updatedData.photoUrl = compressedBase64;
                 } catch (error) {
                     alert("Помилка обробки фото: " + error.message);
                 }
             }
 
-            await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), updatedData);
+            try {
+                await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), updatedData);
+            } catch (err) {
+                alert("Помилка збереження в базу: " + err.message);
+            }
             
             btnSave.innerText = "Зберегти зміни";
             btnSave.disabled = false;
