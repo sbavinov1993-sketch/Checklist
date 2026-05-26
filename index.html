@@ -46,9 +46,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // СЮДИ ВСТАВТЕ СВОЇ КЛЮЧІ FIREBASE З КОНСОЛІ
+        // ТВОЇ КЛЮЧІ FIREBASE
         const firebaseConfig = {
-            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
+            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc", // ПІДСТАВ СВІЙ API KEY
             authDomain: "checklist-144ac.firebaseapp.com",
             projectId: "checklist-144ac",
             storageBucket: "checklist-144ac.firebasestorage.app",
@@ -66,7 +66,7 @@
                 container.innerHTML = '';
 
                 if(querySnapshot.empty) {
-                    container.innerHTML = '<p class="text-center text-gray-500">Створіть структуру "sections" -> "tasks" в Firestore.</p>';
+                    container.innerHTML = '<p class="text-center text-gray-500">Створіть структуру в Firestore.</p>';
                     return;
                 }
 
@@ -74,7 +74,7 @@
                     const sectionData = sectionDoc.data();
                     const sectionHtml = document.createElement('div');
                     sectionHtml.className = "border-l-4 border-blue-500 bg-gray-50 rounded-r-xl p-4 shadow-sm";
-                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || sectionData.text || 'Розділ'}</h2>`;
+                    sectionHtml.innerHTML = `<h2 class="text-xl font-bold text-blue-900 mb-3">${sectionData.title || sectionData.text || 'Умови зберігання речових доказів'}</h2>`;
                     
                     const tasksListContainer = document.createElement('div');
                     tasksListContainer.className = "space-y-2";
@@ -95,12 +95,13 @@
                             if (e.target.type !== 'checkbox') openModal(sectionId, taskId, taskData);
                         });
 
-                        const taskTitle = taskData.title || taskData.text || "Завдання";
+                        // Адаптація під твоє поле "текст" із бази даних
+                        const taskTitle = taskData.text || taskData.title || "Завдання";
 
                         taskRow.innerHTML = `
                             <div class="flex items-center space-x-3">
-                                <input type="checkbox" ${taskData.isCompleted || taskData.Завершено ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
-                                <span class="font-medium ${taskData.isCompleted || taskData.Завершено ? 'line-through text-gray-400' : 'text-gray-700'}">${taskTitle}</span>
+                                <input type="checkbox" ${taskData.Завершено === true || taskData.isCompleted === true ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer">
+                                <span class="font-medium ${taskData.Завершено === true || taskData.isCompleted === true ? 'line-through text-gray-400' : 'text-gray-700'}">${taskTitle}</span>
                             </div>
                             <div class="text-xs text-gray-400 flex items-center space-x-2">
                                 ${taskData.additionalInfo ? '📝' : ''}
@@ -111,8 +112,8 @@
 
                         taskRow.querySelector('input[type="checkbox"]').addEventListener('change', async (e) => {
                             await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), { 
-                                isCompleted: e.target.checked,
-                                "Завершено": e.target.checked
+                                "Завершено": e.target.checked,
+                                isCompleted: e.target.checked
                             });
                         });
 
@@ -124,7 +125,7 @@
 
         function openModal(sectionId, taskId, taskData) {
             currentActiveTask = { sectionId, taskId, taskData };
-            document.getElementById('modal-task-title').innerText = taskData.title || taskData.text || "Завдання";
+            document.getElementById('modal-task-title').innerText = taskData.text || taskData.title || "Завдання";
             document.getElementById('modal-info').value = taskData.additionalInfo || '';
             
             const imgPreview = document.getElementById('modal-photo-preview');
@@ -140,7 +141,6 @@
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        // Функція сильного стиснення фотографії (макс ширина 600px, якість 50%)
         function resizeAndConvertToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -150,21 +150,13 @@
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600; 
-                        const MAX_HEIGHT = 450;
+                        const MAX_WIDTH = 500; // Робимо картинку компактною
                         let width = img.width;
                         let height = img.height;
 
-                        if (width > height) {
-                            if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            }
-                        } else {
-                            if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
-                            }
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
                         }
 
                         canvas.width = width;
@@ -172,8 +164,7 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Стискаємо до JPEG з 50% якості, щоб файл гарантовано важив < 200 КБ
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.4); // 40% якості — мінімальна вага тексту
                         resolve(dataUrl);
                     };
                 };
@@ -208,7 +199,7 @@
             try {
                 await updateDoc(doc(db, `sections/${sectionId}/tasks/${taskId}`), updatedData);
             } catch (err) {
-                alert("Помилка збереження: " + err.message);
+                alert("Помилка бази даних: " + err.message);
             }
             
             btnSave.innerText = "Зберегти зміни";
