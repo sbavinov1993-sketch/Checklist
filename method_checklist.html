@@ -2,278 +2,239 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Методичний посібник перевіряючого</title>
-    <style>
-        body {
-            background-color: #050b14;
-            font-family: Arial, sans-serif;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-        }
-        
-        /* Хедер посібника */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 25px;
-            background-color: #0b1528;
-            border-radius: 12px;
-            border: 1px solid #1a2b4c;
-            margin-bottom: 25px;
-        }
-        
-        .header-title h1 {
-            font-size: 26px;
-            margin: 0;
-            font-weight: bold;
-            color: #ffffff;
-        }
-        
-        .header-title p {
-            font-size: 14px;
-            color: #8a99ad;
-            margin: 6px 0 0 0;
-        }
-        
-        .logo-link img {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            border: 2px solid #1e3663;
-            transition: transform 0.2s ease;
-        }
-        
-        .logo-link img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Структурні розділи (Картки) */
-        .section-card {
-            background-color: #0b1528;
-            border: 1px solid #162644;
-            border-radius: 12px;
-            padding: 20px 25px;
-            margin-bottom: 20px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #4da3ff;
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #162644;
-            padding-bottom: 10px;
-        }
-        
-        /* Елементи списку (Кнопки / Критерії) */
-        .criterion-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 12px 0;
-            border-bottom: 1px solid #111f38;
-        }
-        
-        .criterion-item:last-child {
-            border-bottom: none;
-        }
-        
-        .criterion-text {
-            max-width: 80%;
-        }
-        
-        .criterion-name {
-            font-weight: bold;
-            font-size: 15px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .criterion-desc {
-            font-size: 13px;
-            color: #8a99ad;
-            margin: 4px 0 0 0;
-            line-height: 1.4;
-        }
-        
-        .normative-tag {
-            display: inline-block;
-            background-color: #1c2d4d;
-            color: #99c2ff;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 4px;
-            font-weight: 500;
-        }
-
-        /* Кнопки роз'яснень */
-        .read-btn {
-            background-color: #132747;
-            color: #4da3ff;
-            text-decoration: none;
-            font-size: 13px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #203d6e;
-            white-space: nowrap;
-            transition: background-color 0.2s;
-        }
-        
-        .read-btn:hover {
-            background-color: #1c3866;
-            color: #ffffff;
-        }
-        
-        /* Фінальний блок звітності */
-        .footer-report {
-            background: linear-gradient(135deg, #0f203d 0%, #0b1528 100%);
-            border: 1px solid #203d6e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            font-size: 14px;
-            color: #e2e8f0;
-            line-height: 1.5;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методичні рекомендації для перевіряючих</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0f172a] min-h-screen p-4 md:p-8 text-[#e2e8f0]">
 
-    <div class="header-container">
-        <div class="header-title">
-            <h1>📘 Методичний посібник перевіряючого</h1>
-            <p>Інтерактивні підказки та роз'яснення алгоритмів перевірки підрозділів ГУНП</p>
+    <div class="max-w-3xl mx-auto space-y-6">
+        
+        <div class="bg-slate-900/80 backdrop-blur rounded-2xl shadow-xl p-6 border border-slate-800 flex items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">📘 3нання алгоритмів та інструкцій перевіряючого</h1>
+                <p class="text-xs text-slate-400 mt-1.5">Інтерактивні підказки та роз'яснення алгоритмів перевірки підрозділів ГУНП</p>
+            </div>
+            <a href="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" target="_blank" class="shrink-0 transition transform hover:scale-105" title="Відкрити герб у повному розмірі">
+                <img src="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" alt="УГІ ГУНП" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-slate-700 object-cover shadow-md">
+            </a>
         </div>
-        <a href="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" target="_blank" class="logo-link" title="Відкрити герб УДІ у повному розмірі">
-            <img src="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" alt="УГІ ГУНП в Полтавській області">
-        </a>
+
+        <div class="space-y-4">
+            
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">1. Вхід до адміністративного приміщення та хол</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Загальний стан та perimeter входу</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перед входом до адміністративного приміщення оглянути загальний стан адміністративної будівлі. Перевірити наявність на вході інформаційного знаку «Ведеться відеоспостереження». Перевірити справність роботи переговорного пристрою «Черговий-вулиця» (домофону).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Інформаційні стенди у холі</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Після входу до приміщення оглянути інформаційні стенди на предмет актуальності інформації (керівництво МВС, НПУ, ГУНП, а також графіки прийому громадян керівництвом підрозділу).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Чергова частина</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Перевірити наявність щотижневих графіків чергування особового складу (відповідність особового складу в нарядах, наявність рапортів про внесення змін до графіку) – пп. 1,2 р. VIII Інструкції, затвердженої наказом МВС від 27.04.2020 № 357.</li>
+                            <li>Перевірити своєчасність отримання матеріалів ЄО виконавцями (наявність в ЧЧ розписаних матеріалів, яким вже понад 3днів) та наявність відповідних підписів у журналі отримання матеріалів єдиного обліку – п. 10 р. ІІ Порядку, затвердженого наказом МВС від 08.02.2019 № 100.</li>
+                            <li>Перевірити записи у журналі інструктажів при поводженні з вогнепальною зброєю та Книзі нарядів, у тому числі відмітки про приймання зброї у попереднього чергового наряду.</li>
+                            <li>Перевірити наявність металошукача та його справність.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Відеоспостереження, Інструктаж та Пропускний режим</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Перевірити справність системи стаціонарного відеоспостереження, наявність та актуальність наказу щодо визначення відповідальної особи за контроль за функціонуванням стаціонарної системи підрозділу; перегляд відеозаписів; копіювання та видача відеозаписів. Наявність журналу обліку копіювання та видачі відеозаписів зі стаціонарної системи – пп. 2,3 р. V Порядку, затвердженого наказом МВС від 18.12.2018 № 1026.</li>
+                            <li>Перевірити якість проведення інструктажу добових нарядів шляхом перегляду відеозапису із стаціонарної системи, при цьому звернути увагу чи є доступ до стаціонарної системи у осіб, які не визначені наказом.</li>
+                            <li>Перевірити дотримання пропускного режиму, зокрема облік відвідувачів у журналу обліку доставлених, відвідувачів та запрошених (абз. 2 п. 8 р. VI Інструкції, затвердженої наказом МВС від 23.05.2017 № 440).</li>
+                            <li>Перевірити наявність відвідувачів вище 1 поверху адміністративної будівлі (п.п. 2 п. 4 наказу ГУНП від 13.01.2025 № 108).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">2. Наряди ГРПП, СОГ</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Зовнішній вигляд та Опитування працівників</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перевірити зовнішній вигляд поліцейських на предмет відповідності форменого одягу, який має відповідати Правилам, затвердженим наказом МВС від 19.08.2017 № 718. При цьому звернути увагу на стан зношеності однострою та охайності поліцейського, а також наявність світловідбиваючих жилетів. Здійснити опитування поліцейських на предмет знань алгоритмів дій поліцейських (антитерористичних, на місці вибухів/прильотів).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Екіпірування, Аптечки та Technical засоби</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перевірити наявність особистих аптечок (зокрема турнікети тощо). Перевірити наявність належного екіпірування (спеціальні засоби, їх розміщення – на поясній системі, наявність гумових кийків, справність кайданок та ключів до них; наявність сльозогінної речовини у балончиках). Також перевірити бронежилети, які повинні бути не менше 4 класу захисту. Перевірити наявність портативних відеореєстраторів та планшетів (їх технічний стан, цілісність та відповідність облікового запису користувача ІПНП).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Бланкова продукція</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перевірити наявність бланкової продукції (заяви пояснення тощо, а також бланків суворої звітності: протоколи про вчинення адміністративного правопорушення (ГБ/ПДР), постанови (ГБ/ПДР), тимчасові дозволи на право керування транспортними засобами, термінові заборонні приписи стосовно кривдника).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">3. Службовий транспорт підрозділу</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Дорожня документація</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перевірити наявність відповідних документів (копії свідоцтва про реєстрацію ТЗ, копії страхового полісу, копії дозволу на використання проблискових маячків, у разі їх присутності на авто). Перевірити стан заповнення дорожніх листів (відмітки про проходження технічного та медичного оглядів, а також чи внесені відомості про видачу пального). Перевірити відповідність пробігу одометра та дорожнього листа (встановити чи відсутні розбіжності, особливо на транспортних засобах, що використовуються не для несення служби у добових нарядах).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Комплектування, Технічний стан та Реєстратор</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Перевірити комплектування: аптечка, вогнегасник, знак аварійної зупинки, конуси, стрічка для огородження місця події. Перевірити технічний стан (гума на осях за сезоном, технічна справність авто (зачиняються дверцята на замок; світлові покажчики повороту, фари тощо). Перевірити справність автомобільного відеореєстратора (для ГРПП – цілісність пломб на ньому). Надати оцінку загальному стану автомобіля, його салону (відсутність пошкоджень, порядки в авто).</p>
+                    </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Стан заповнення журналів</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Переглянути службову документацію: журнал виїзду та повернення службового автотранспорту (чи усі авто, що на виїзді записані), інструктажі водіїв (звірка даних із водіями, які виїхали на лінію).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">4. Службові кабінети</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Обстеження кабінетів та Умови праці</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Обстеження службових приміщень на предмет виявлення заборонених речей (ті, можуть бути використані для катування, речових доказів, спиртних напоїв тощо.) Надати оцінку загальному стану кабінетів (умови праці, порядки кабінетах, наявність та відповідність інформаційних табличок із номером кабінету, служби та даних на поліцейських).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">5. Територія</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Стан території, Бокси та Безпека периметру</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>Здійснити огляд загального стану території (нумерація боксів та наявність інформаційних табличок про відповідальних осіб, а також їх опечатування). Перевірити захищеність підрозділу по периметру (колючий дріт, сигналізація, освітлення у нічний час, наявність «сліпих зон» у системі відеоспостереження тощо).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">6. Речові докази</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Кімната зберігання речових доказів, Сигналізація та ТЗ</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Перевірити стан зберігання речових доказів (кімната + великогабаритні, де все повинно бути розкладено по поличках, дрібні обов’язково розкладені по картонних коробках/пластикових ящиках).</li>
+                            <li>Перевірити стан опечатування речових доказів (також наявність інформаційних бирок та витягів із ІП «Речові докази»).</li>
+                            <li>Окрема увага приділяється обліку та належному опечатуванню вилучених транспортних засобів.</li>
+                            <li>Перевірка справності сигналізації (на кімнаті для збереження речових доказів, а також боксі для збереження великогабаритних речових доказів).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg space-y-3">
+                <h2 class="text-base font-bold text-[#60a5fa] border-b border-slate-800 pb-2">7. Оформлення результатів перевірки</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-slate-200">📌 Складання рапорту та Терміни завантаження в СЕД</span>
+                        <button type="button" class="text-xs text-[#38bdf8] hover:text-sky-300 font-medium flex items-center info-btn">ℹ️ Читати роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+                        <p class="font-semibold text-[#60a5fa]">Що та як перевіряти:</p>
+                        <p>За результатами проведених заходів заступник відповідального, що здійснював перевірку оформлює відповідний рапорт/доповідну записку. (структура даного рапорту/доповідної записки становить опис проведених заходів по блокам у відповідній послідовності, із додаванням відповідних photo-матеріалів, як позитивних моментів, так і негативних). Даний документ завантажується в СЕД на ім’я начальника ГУНП або особи, що виконує його обов’язки, за власним підписом, не пізніше 12:00 год. наступного дня після проведених заходів.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div class="section-card">
-        <div class="section-title">1. Вхід до адміністративного приміщення та хол</div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Загальний стан та периметр входу</div>
-                <p class="criterion-desc">Огляд зовнішнього стану будівлі, перевірка переговорного пристрою «Черговий-вулиця» (домофон) та знаку «Ведеться відеоспостереження» на вході.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Інформаційні стенди у холі</div>
-                <p class="criterion-desc">Перевірка актуальності інформації про керівництво МВС, НПУ, ГУНП та обов'язкова наявність графіків прийому громадян.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Чергова частина (Графіки, ЄО та Зброя)</div>
-                <p class="criterion-desc">Контроль щотижневих графіків, перевірка Книги нарядів та журналу інструктажів по зброї. Оцінка своєчасності отримання матеріалів ЄО виконавцями (наявність залишків понад 3 дні).</p>
-                <span class="normative-tag">Наказ МВС №357, Наказ МВС №100</span>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Відеоспостереження, Інструктаж та Пропускний режим</div>
-                <p class="criterion-desc">Перевірка працездатності стаціонарного відео, журналу обліку видачі відеозаписів та дотримання пропускного режиму (облік відвідувачів у журналі, контроль перебування вище 1-го поверху).</p>
-                <span class="normative-tag">Наказ МВС №1026, Наказ МВС №440, Наказ ГУНП №108 від 13.01.2025</span>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-    </div>
-
-    <div class="section-card">
-        <div class="section-title">2. Наряди ГРПП, СОГ</div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Зовнішній вигляд та Опитування працівників</div>
-                <p class="criterion-desc">Відповідність та зношеність однострою, наявність світловідбиваючих жилетів. Опитування знань тактичних алгоритмів (дії при прильотах/вибухах, антитерор).</p>
-                <span class="normative-tag">Наказ МВС №718</span>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Екіпірування, Аптечки та Технічні засоби</div>
-                <p class="criterion-desc">Наявність аптечок (турнікетів), спецзасобів на поясній системі (кийки, кайданки + ключі, балончики), бронежилетів ≥ 4 класу, а також бодікамер та планшетів з перевіркою облікових записів ІПНП.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Бланкова продукція та Сувора звітність</div>
-                <p class="criterion-desc">Забезпеченість бланками заяв/пояснень, а також суворими бланками: протоколи та постанови ГБ/ПДР, тимчасові дозволи на керування ТЗ, термінові заборонні приписи.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-    </div>
-
-    <div class="section-card">
-        <div class="section-title">3. Службовий транспорт підрозділу</div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Документація та Дорожні листи</div>
-                <p class="criterion-desc">Копії техпаспортів, страховки, дозволів на маячки. Заповнення дорожніх листів (медогляд, технагляд, пальне) та звірка одометра з лінією (особливо для авто поза добовим нарядом).</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Службова документація автотранспорту + Технічний стан</div>
-                <p class="criterion-desc">Комплектація (вогнегасник, аптечка, конуси, стрічка), працездатність замків/фар, сезонність гуми, справність пломб автомобільних реєстраторів. Перевірка Журналу виїзду/повернення ТЗ.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-    </div>
-
-    <div class="section-card">
-        <div class="section-title">4. Обстеження приміщень, території та речових доказів</div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Службові кабінети</div>
-                <p class="criterion-desc">Обстеження кабінетів на предмет відсутності заборонених речей (алкоголь, предмети що можуть бути використані для катування, неліковані речдоки). Оцінка умов праці та табличок.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Територія підрозділу</div>
-                <p class="criterion-desc">Контроль захищеності периметру (колючий дріт, освітлення, сліпі зони камер, сигналізація), стан та опечатування боксів, інформаційні таблички відповідальних осіб.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-        
-        <div class="criterion-item">
-            <div class="criterion-text">
-                <div class="criterion-name">📌 Кімната зберігання речових доказів, Сигналізація та ТЗ</div>
-                <p class="criterion-desc">Перевірка умов розкладки (полиці/коробки), опечатування, наявність бирок та витягів з ІП. Окремий контроль обліку вилученого транспорту та працездатності сигналізації КЗРД і боксів.</p>
-            </div>
-            <a href="#" class="read-btn">Читати роз'яснення</a>
-        </div>
-    </div>
-
-    <div class="footer-report">
-        <strong>📝 Оформлення результатів перевірки:</strong><br>
-        За результатами перевірки оформлюється рапорт/доповідна записка (опис заходів по блоках із фотофіксацією позитивних та негативних моментів), яка підписується та завантажується в <strong>СЕД на ім’я начальника ГУНП до 12:00 год. наступного дня</strong> після перевірки.
-    </div>
-
+    <script>
+        document.querySelectorAll('.info-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const infoBlock = btn.parentElement.nextElementSibling;
+                infoBlock.classList.toggle('hidden');
+                
+                if (infoBlock.classList.contains('hidden')) {
+                    btn.innerText = "ℹ️ Читати роз’яснення";
+                } else {
+                    btn.innerText = "🔼 Згорнути підказку";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
