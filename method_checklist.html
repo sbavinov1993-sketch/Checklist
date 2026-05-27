@@ -3,415 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Методичний чек-ліст перевірок</title>
+    <title>Методичні рекомендації для перевіряючих</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Безпечні стилі для PDF без oklch */
-        .pdf-item-block {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-    </style>
 </head>
 <body class="bg-[#f8fafc] min-h-screen p-4 md:p-8 text-[#334155]">
 
-    <div class="max-w-4xl mx-auto space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-[#0f172a] tracking-tight">Методичний інспекційний чек-ліст</h1>
-                <p class="text-sm text-[#64748b] mt-1">Проведення комплексних перевірок підрозділів ГУНП</p>
-            </div>
-            <div class="flex items-center space-x-2">
-                <label class="text-sm font-medium text-[#475569]">ПІБ інспектора:</label>
-                <input type="text" id="inspector-name" class="border border-[#cbd5e1] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#1d4ed8]" placeholder="Введіть ПІБ">
-            </div>
+    <div class="max-w-3xl mx-auto space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-[#e2e8f0]">
+            <h1 class="text-2xl font-bold text-[#0f172a] tracking-tight">📘 Методичний посібник перевіряючого</h1>
+            <p class="text-xs text-[#64748b] mt-1.5">Інтерактивні підказки та роз'яснення алгоритмів перевірки підрозділів ГУНП</p>
         </div>
 
-        <form id="checklist-form" class="space-y-6">
+        <div class="space-y-4">
             
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">1. Наряд ГРПП, СОГ та Опитування</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">1. Наряд ГРПП, СОГ та Опитування</h2>
                 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Знання алгоритмів дій поліцейських</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q1" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q1" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Знання алгоритмів дій поліцейських</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️ Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️ Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Знання алгоритмів дій поліцейських (антитерористичних, на місці вибухів/прильотів)[cite: 3].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Знання алгоритмів дій поліцейських (антитерористичних, на місці вибухів/прильотів). Опитати працівників наряду щодо їхніх дій у разі отримання відповідних сигналів.</p>
                     </div>
-                    <textarea name="comment_q1" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження/коментар інспектора (якщо є)"></textarea>
                 </div>
 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Наявність належних аптечок</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q2" value="Норма" checked class="mr-1.5"> Норma
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q2" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Наявність належних аптечок</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️ Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Наявність нормальних аптечок, зокрема обов'язкова наявність і придатність турнікетів тощо[cite: 4].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Наявність нормальних аптечок, зокрема обов'язкова наявність і придатність турнікетів тощо. Перевірити терміни придатності компонентів.</p>
                     </div>
-                    <textarea name="comment_q2" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження/коментар інспектора..."></textarea>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Якість ранкового інструктажу</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q3" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q3" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Якість ранкового інструктажу</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Перегляд якості ранкового інструктажу, шляхом вивчення та аналізу відеозапису з бодікамер або стаціонарних систем[cite: 5].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Перегляд якості ранкового інструктажу шляхом вивчення та аналізу відеозапису з бодікамер або стаціонарних систем підрозділу.</p>
                     </div>
-                    <textarea name="comment_q3" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження/коментар інспектора..."></textarea>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">2. Транспортна дисципліна</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">2. Транспортна дисципліна</h2>
                 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Документи водія та службового авто</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q4" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q4" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Документи водія та службового авто</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Наявність: посвідчення водія, копії свідоцтва про реєстрацію ТЗ, копії страхового полісу, копії дозволу на використання проблискових маячків, шляхового листа (з обов'язковою відміткою медика). Відповідність фактичного пробігу на одометрі даним у шляховому листі, наявність записів про видачу пального[cite: 7].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Наявність: посвідчення водія, копії свідоцтва про реєстрацію ТЗ, копії страхового полісу, копії дозволу на використання проблискових маячків, шляхового листа (з обов'язковою відміткою медика). Перевірити відповідність фактичного пробігу на одометрі даним у шляховому листі, наявність записів про видачу пального.</p>
                     </div>
-                    <textarea name="comment_q4" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Комплектування автомобіля</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q5" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q5" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Комплектування автомобіля</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Наявність справного вогнегасника, автомобільної аптечки, знаку аварійної зупинки, конусів, а також нових трубок до газоаналізатора «Драгер»[cite: 8].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Наявність справного вогнегасника, автомобільної аптечки, знаку аварійної зупинки, конусів, а також нових трубок до газоаналізатора «Драгер».</p>
                     </div>
-                    <textarea name="comment_q5" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Технічний стан ТЗ та відеореєстратор</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q6" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q6" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Технічний стан ТЗ та відеореєстратор</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Відповідність гуми на осях поточному сезону. Візуальна справність (чи зачиняються двері на замок, робота світлових покажчиків тощо). Справність автомобільного відеореєстратора (для екіпажів ГРПП – обов'язкова перевірка цілісності пломб)[cite: 9]. Загальний охайний стан салону[cite: 9].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Відповідність гуми на осях поточному сезону. Візуальна справність (чи зачиняються двері на замок, робота світлових покажчиків тощо). Справність автомобільного відеореєстратора (для екіпажів ГРПП – обов'язкова перевірка цілісності пломб). Загальний охайний стан салону.</p>
                     </div>
-                    <textarea name="comment_q6" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Службова документація автотранспорту</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q7" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q7" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Службова документація автотранспорту</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Журнал виїзду та повернення службового автотранспорту, проведення інструктажів водіїв. Звірка даних із водіями, які фактично виїхали на лінію[cite: 10].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Журнал виїзду та повернення службового автотранспорту, проведення інструктажів водіїв. Звірка даних із водіями, які фактично виїхали на лінію.</p>
                     </div>
-                    <textarea name="comment_q7" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">3. Екіпіровка та Спецзасоби</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">3. Екіпіровка та Спецзасоби</h2>
                 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Бодікамери та Планшети</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q8" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q8" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Бодікамери та Планшети</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Наявність бодікамер (з перевіркою правильності виставленої дати та часу). Наявність службового планшетного пристрою (з відповідністю користувача, який здійснив фактичний вхід у систему)[cite: 12].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Наявність бодікамер (з перевіркою правильності виставленої дати та часу). Наявність службового планшетного пристрою (з відповідністю користувача, який здійснив фактичний вхід у систему).</p>
                     </div>
-                    <textarea name="comment_q8" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Особиста екіпіровка та озброєння</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q9" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q9" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Особиста екіпіровка та озброєння</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Наявність бронежилетів (не нижче 4-го класу захисту), газових балончиків (придатні за строком, повні), наручників (перевірка справності ключів та запірного механізму), гумових кийків, світловідбивних жилетів, табельної вогнепальної зброї у відповідній кобурі (відкритого носіння, на поясі), а також наявність стрічки для огородження місця події[cite: 13].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Наявність бронежилетів (не нижче 4-го класу захисту), газових балончиків (придатні за строком, повні), наручників (перевірка справності ключів та запірного механізму), гумових кийків, світловідбивних жилетів, табельної вогнепальної зброї у відповідній кобурі (відкритого носіння, на поясі), а також наявність стрічки для огородження місця події.</p>
                     </div>
-                    <textarea name="comment_q9" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">4. Чергова частина</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">4. Чергова частина</h2>
                 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Документація, зброя та пропускний режим</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q10" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q10" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Документація, зброя та пропускний режим</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Відповідність графіків чергування (рапорти про зміни), записи у журналі інструктажів по зброї, відмітки про приймання зброї в Книзі нарядів[cite: 15]. Пропускний режим: відсутність необлікованих осіб, справність металошукача та правильність заповнення його журналу, перебування громадян вище 1-го поверху[cite: 15].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Відповідність графіків чергування (рапорти про зміни), записи у журналі інструктажів по зброї, відмітки про приймання зброї в Книзі нарядів. Пропускний режим: відсутність необлікованих осіб, справність металошукача та правильність заповнення його журналу, перебування громадян вище 1-го поверху.</p>
                     </div>
-                    <textarea name="comment_q10" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Відеоспостереження, периметр та стенди</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q11" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q11" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Відеоспостереження, периметр та стенди</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Працездатність камер, наявність «сліпих зон», глибина архіву (не менше 30 діб)[cite: 15, 17]. Справність переговорного пристрою «черговий-вулиця»[cite: 15]. Захищеність периметру (колючий дріт, сигналізація, нічне освітлення)[cite: 15]. Наявність знаку «Ведеться відеоспостереження», актуальність стендів із керівництвом[cite: 16].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Працездатність камер, наявність «сліпих зон», глибина архіву (не менше 30 діб). Справність переговорного пристрою «черговий-вулиця». Захищеність периметру (колючий дріт, сигналізація, нічне освітлення). Наявність знаку «Ведеться відеоспостереження», актуальність стендів із керівництвом.</p>
                     </div>
-                    <textarea name="comment_q11" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">5. Кабінети та Територія</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">5. Кабінети та Територія</h2>
                 
-                <div class="border-b border-[#f8fafc] pb-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Обстеження кабінетів</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q12" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q12" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Обстеження кабінетів</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Обстеження на предмет відсутності заборонених речей (які можуть бути використані для катування, необліковані речові докази, алкоголь тощо)[cite: 19]. Порядок у кабінетах, наявність та відповідність табличок із даними поліцейських[cite: 20].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Обстеження на предмет відсутності заборонених речей (які можуть бути використані для катування, необліковані речові докази, алкоголь тощо). Порядок у кабінетах, наявність та відповідність табличок із даними поліцейських.</p>
                     </div>
-                    <textarea name="comment_q12" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Територія підрозділу та бокси</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q13" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q13" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Територія підрозділу та бокси</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Облік та належне опечатування тимчасово вилучених ТЗ[cite: 22]. Нумерація боксів та наявність табличок відповідальних. Справність сигналізації на боксі великогабаритних речових доказів та його опечатування[cite: 22].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Облік та належне опечатування тимчасово вилучених ТЗ. Нумерація боксів та наявність табличок відповідальних. Справність сигналізації на боксі великогабаритних речових доказів та його опечатування.</p>
                     </div>
-                    <textarea name="comment_q13" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">6. Зберігання речових доказів</h2>
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">6. Зберігання речових доказів</h2>
                 
-                <div class="space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="font-medium text-[#1e293b]">📌 Кімната речових доказів</span>
-                        <div class="flex items-center space-x-2">
-                            <label class="inline-flex items-center text-xs bg-[#f0fdf4] text-[#166534] px-3 py-1.5 rounded-lg border border-[#bbf7d0] cursor-pointer">
-                                <input type="radio" name="q14" value="Норма" checked class="mr-1.5"> Норма
-                            </label>
-                            <label class="inline-flex items-center text-xs bg-[#fef2f2] text-[#991b1b] px-3 py-1.5 rounded-lg border border-[#fecaca] cursor-pointer">
-                                <input type="radio" name="q14" value="Порушення" class="mr-1.5"> Порушення
-                            </label>
-                        </div>
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Кімната речових доказів</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     </div>
-                    <button type="button" class="text-xs text-[#2563eb] hover:underline flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
-                        <p class="font-semibold">Що перевіряти:</p>
-                        <p>Розміщення речдоків (усе розкладено по поличках, дрібні — обов'язково у коробках чи пластикових ящиках)[cite: 24]. Стан опечатування, обов'язкова наявність інформаційних бирок та витягів з ІП «Речові докази»[cite: 25].</p>
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Розміщення речдоків (усе розкладено по поличках, дрібні — обов'язково у коробках чи пластикових ящиках). Стан опечатування, обов'язкова наявність інформаційних бирок та витягів з ІП «Речові докази».</p>
                     </div>
-                    <textarea name="comment_q14" class="w-full border border-[#e2e8f0] rounded-xl p-2 text-xs focus:outline-none focus:border-[#2563eb]" placeholder="Зауваження..."></textarea>
                 </div>
             </div>
 
-            <div class="flex justify-end">
-                <button type="submit" id="btn-submit" class="bg-[#1d4ed8] hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl transition duration-200 shadow-sm flex items-center space-x-2">
-                    <span>💾 Зберегти звіт у базу</span>
-                </button>
-            </div>
-
-        </form>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA5x6CnVTrySbKGlu7n1GOWrGKNO78sKJc",
-            authDomain: "checklist-144ac.firebaseapp.com",
-            projectId: "checklist-144ac",
-            messagingSenderId: "32249871886",
-            appId: "1:32249871886:web:951b7e7787f5418ef0465f"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Логіка кнопок методичних роз’яснень (акордеон)
+    <script>
+        // Проста логіка для відкриття/закриття методичних блоків
         document.querySelectorAll('.info-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const infoBlock = btn.nextElementSibling;
+                const infoBlock = btn.parentElement.nextElementSibling;
                 infoBlock.classList.toggle('hidden');
+                
+                // Зміна зовнішнього вигляду кнопки при активності
+                if (infoBlock.classList.contains('hidden')) {
+                    btn.innerText = "ℹ️ Методичні роз’яснення";
+                } else {
+                    btn.innerText = "🔼 Згорнути підказку";
+                }
             });
-        });
-
-        // Відправка форми
-        document.getElementById('checklist-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const inspectorName = document.getElementById('inspector-name').value.trim();
-            if (!inspectorName) {
-                alert("Будь ласка, вкажіть ПІБ перевіряючого перед збереженням!");
-                return;
-            }
-
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.innerText = "Збереження...";
-            btnSubmit.disabled = true;
-
-            const records = [];
-            // Парсимо всі 14 питань
-            for (let i = 1; i <= 14; i++) {
-                const questionElement = document.querySelector(`input[name="q${i}"]:checked`);
-                const taskTitle = questionElement.closest('.space-y-3, .border-b').querySelector('span').innerText.replace('📌 ', '');
-                const status = questionElement.value;
-                const comment = document.querySelector(`textarea[name="comment_q${i}"]`).value.trim();
-
-                records.push({
-                    taskTitle,
-                    status,
-                    comment
-                });
-            }
-
-            try {
-                // Записуємо у НОВУ колекцію methodical_inspections
-                await addDoc(collection(db, "methodical_inspections"), {
-                    inspectorName: inspectorName,
-                    createdAt: new Date().toISOString(),
-                    totalItemsChecked: records.length,
-                    records: records
-                });
-
-                alert("Звіт за методичним чек-лістом успішно збережено в Firebase!");
-                document.getElementById('checklist-form').reset();
-                document.getElementById('inspector-name').value = inspectorName;
-            } catch (error) {
-                alert("Помилка збереження: " + error.message);
-            } finally {
-                btnSubmit.innerText = "💾 Зберегти звіт у базу";
-                btnSubmit.disabled = false;
-            }
         });
     </script>
 </body>
