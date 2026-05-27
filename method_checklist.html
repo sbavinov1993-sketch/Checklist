@@ -6,15 +6,15 @@
     <title>Методичні рекомендації для перевіряючих</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Безпечне накладання нових кольорів без втручання в структуру HTML */
+        /* Безпечне накладання фону без втручання в структуру HTML та JS */
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%) !important;
         }
-        /* Перевизначення кольору фону для відкритих підказок */
+        /* Зміна кольору фону підказок із сірого на ніжний світло-блакитний */
         .bg-\[\#f8fafc\] {
-            background-color: #f0f7ff !important; /* Світло-блакитний замість сірого */
+            background-color: #f0f7ff !important;
         }
-        /* Коригування кольору підзаголовка для кращої контрастності */
+        /* Покращення читабельності тексту підзаголовка на білому фоні */
         .text-\[\#64748b\] {
             color: #475569 !important;
         }
@@ -51,7 +51,7 @@
                     </div>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
                         <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
-                        <p>Наявність нормальних аптечок, зокрема обов'язкова наявність і придатність турнікетів тощо. Перевірити терміни придатності компонентів.</p>
+                        <p>Наявність normalних аптечок, зокрема обов'язкова наявність і придатність турнікетів тощо. Перевірити терміни придатності компонентів.</p>
                     </div>
                 </div>
 
@@ -77,7 +77,7 @@
                     </div>
                     <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
                         <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
-                        <p>Наявність: посвідчення водія, копії свідоцтва про реєстрацію ТЗ, копії страхового полісу, копії дозволу на використання проблискових маячків, шляхового листа (з обов'язковою відміткою медика). Перевірити відповідність фактичного пробігу на одометрі даним у шляхового листа, наявність записів про видачу пального.</p>
+                        <p>Наявність: посвідчення водія, копії свідоцтва про реєстрацію ТЗ, копії страхового полісу, копії дозволу на використання проблискових маячків, шляхового листа (з обов'язковою відміткою медика). Перевірити відповідність фактичного пробігу на одометрі даним у шляховому листі, наявність записів про видачу пального.</p>
                     </div>
                 </div>
 
@@ -142,7 +142,7 @@
             </div>
 
             <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
-                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">4. Чергова частина</h2>
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">4. Чергова часть</h2>
                 
                 <div class="py-2 space-y-2">
                     <div class="flex items-center justify-between">
@@ -179,3 +179,28 @@
                         <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
                         <p>Обстеження на предмет відсутності заборонених речей (які можуть бути використані для катування, необліковані речові докази, алкоголь тощо). Порядок у кабінетах, наявність та відповідність табличок із даними поліцейських.</p>
                     </div>
+                </div>
+
+                <div class="py-2 space-y-2 border-t border-[#f8fafc]">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Територія підрозділу та бокси</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Облік та належне опечатування тимчасово вилучених ТЗ. Нумерація боксів та наявність табличок відповідальних. Справність сигналізації на боксі великогабаритних речових доказів та його опечатування.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-[#e2e8f0] shadow-sm space-y-3">
+                <h2 class="text-base font-bold text-[#1e3a8a] border-b border-[#f1f5f9] pb-2">6. Зберігання речових доказів</h2>
+                
+                <div class="py-2 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-sm text-[#1e293b]">📌 Кімната речових доказів</span>
+                        <button type="button" class="text-xs text-[#2563eb] hover:text-blue-800 font-medium flex items-center info-btn">ℹ️  Методичні роз’яснення</button>
+                    </div>
+                    <div class="hidden bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0] text-xs text-[#475569] space-y-1">
+                        <p class="font-semibold text-[#1e3a8a]">Що та як перевіряти:</p>
+                        <p>Розміщення речдоків (усе розкла
