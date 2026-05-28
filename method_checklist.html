@@ -9,12 +9,12 @@
         .chevron { transition: transform 0.3s ease; }
         .rotate-180 { transform: rotate(180deg); }
         .task-checked { opacity: 0.4; text-decoration: line-through; transition: all 0.3s ease; }
-        .item-row { transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease; }
+        .item-row { transition: background-color 0.2s ease, transform 0.2s ease; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-[#090d16] via-[#111e42] to-[#090d16] min-h-screen p-4 md:p-8 text-[#e2e8f0] font-sans antialiased">
 
-    <div class="max-w-3xl mx-auto space-y-5">
+    <div class="max-w-3xl mx-auto space-y-6">
         
         <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-slate-800/60 flex items-center justify-between gap-4 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 via-sky-400 to-blue-600"></div>
@@ -27,39 +27,19 @@
                     Інтерактивні підказки та роз'яснення алгоритмів перевірки підрозділів ГУНП
                 </p>
             </div>
-            <a href="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" target="_blank" class="shrink-0 transition transform hover:scale-105 active:scale-95">
+            <a href="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" target="_blank" class="shrink-0 transition transform hover:scale-105 active:scale-95" title="Відкрити герб у повному розмірі">
                 <img src="https://lh3.googleusercontent.com/u/0/d/19OvsmuAvfL6JK04_f55WWt0JlWHiiPfI" alt="УГІ ГУНП" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-slate-700/80 object-cover shadow-lg">
             </a>
         </div>
 
-        <div class="bg-slate-900/60 backdrop-blur rounded-2xl p-4 border border-slate-800/80 shadow-xl space-y-4">
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm">🔍</span>
-                <input type="text" id="search-input" placeholder="Швидкий пошук за ключовими словами чи наказами..." class="w-full pl-9 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition">
-            </div>
-
-            <div>
-                <div class="flex justify-between text-xs font-medium text-slate-400 mb-1.5">
-                    <span>Прогрес перевірки підрозділу</span>
-                    <span id="progress-text">0 з 0 (0%)</span>
-                </div>
-                <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
-                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-sky-400 h-full w-0 transition-all duration-300 ease-out"></div>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center gap-2 text-xs pt-1 border-t border-slate-800/40">
-                <button id="reset-btn" class="text-rose-400 hover:text-rose-300 font-medium transition flex items-center gap-1">🔄 Скинути прогрес</button>
-                <div class="flex gap-2">
-                    <button id="open-all-btn" class="px-2.5 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 rounded-lg text-slate-300 font-medium transition">🔓 Розгорнути все</button>
-                    <button id="close-all-btn" class="px-2.5 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 rounded-lg text-slate-300 font-medium transition">🔒 Згорнути все</button>
-                </div>
-            </div>
+        <div class="flex justify-end gap-2 text-xs">
+            <button id="open-all-btn" class="px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 rounded-lg text-slate-300 font-medium transition active:scale-95">🔓 Розгорнути все</button>
+            <button id="close-all-btn" class="px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 rounded-lg text-slate-300 font-medium transition active:scale-95">🔒 Згорнути все</button>
         </div>
 
-        <div id="sections-container" class="space-y-4">
+        <div class="space-y-4">
             
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 1. Вхід до адміністративної будівлі
                 </h2>
@@ -67,7 +47,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-1" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Загальний стан та периметр входу</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -84,7 +64,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-2" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Інформаційні стенди у холі</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -101,7 +81,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-3" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Чергова частина</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -113,8 +93,8 @@
                         <p class="font-semibold text-sky-400">Що та як перевіряти:</p>
                         <ul class="list-disc pl-4 space-y-2">
                             <li>Перевірити наявність щотижневих графіків чергування особового складу (відповідність особового складу в нарядах, наявність рапортів про внесення змін до графіку) – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">пп. 1,2 р. VIII Інструкції МВС № 357</span>.</li>
-                            <li>Перевірити своечасність отримання матеріалів ЄО виконавцями (із затримкою понад 3 днів) та наявність відповідних підписів у журналі отримання матеріалів єдиного обліку – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">п. 10 р. ІІ Порядку МВС № 100</span>.</li>
-                            <li>Перевірити записи у журналі інструктажів при поводженні з вогнепальною зброєю та Книзі нарядів.</li>
+                            <li>Перевірити своєчасність отримання матеріалів ЄО виконавцями (наявність в ЧЧ розписаних матеріалів, яким вже понад 3 днів) та наявність відповідних підписів у журналі отримання матеріалів єдиного обліку – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">п. 10 р. ІІ Порядку МВС № 100</span>.</li>
+                            <li>Перевірити записи у журналі інструктажів при поводженні з вогнепальною зброєю та Книзі нарядів, у тому числі відмітки про приймання зброї у попереднього чергового наряду.</li>
                             <li>Перевірити наявність металошукача та його справність.</li>
                         </ul>
                     </div>
@@ -123,7 +103,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-4" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Відеоспостереження, інструктаж та пропускний режим</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -134,7 +114,7 @@
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner space-y-2">
                         <p class="font-semibold text-sky-400">Що та як перевіряти:</p>
                         <ul class="list-disc pl-4 space-y-2">
-                            <li>Перевірити справність системи стаціонарного відеоспостереження, наявність наказу щодо відповідальної особи; журнал обліку копіювання та видачі відеозаписів – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">пп. 2,3 р. V Порядку МВС № 1026</span>.</li>
+                            <li>Перевірити справність системи стаціонарного відеоспостереження, наявність та актуальність наказу щодо визначення відповідальної особи; журнал обліку копіювання та видачі відеозаписів – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">пп. 2,3 р. V Порядку МВС № 1026</span>.</li>
                             <li>Перевірити якість проведення інструктажу добових нарядів шляхом перегляду відеозапису із стаціонарної системи.</li>
                             <li>Перевірити дотримання пропускного режиму, зокрема облік відвідувачів у відповідному журналі – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">Інструкція МВС № 440</span>.</li>
                             <li>Перевірити наявність відвідувачів вище 1 поверху адміністративної будівлі – <span class="inline-block bg-slate-800 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300">наказ ГУНП № 108</span>.</li>
@@ -143,7 +123,7 @@
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 2. Екіпірування та технічні засоби
                 </h2>
@@ -151,7 +131,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-5" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Зовнішній вигляд та опитування працівників</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -168,7 +148,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-6" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Екіпірування, аптечки та технічні засоби</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -178,14 +158,14 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Перевірити наявність особистих аптечок (турнікети), спецзасобів (кайдани, кийки, балончики). Перевірити бронежилети (не менше 4 класу захисту), наявність портативних відеореєстраторів та планшетів (Порядок МВС № 1026).</p>
+                        <p>Перевірити наявність особистих аптечок (турнікети), спецзасобів (кайдани, кийки, балончики). Перевірити бронежилети (не менше 4 класу захисту), наявність портативних відеореєстраторів та планшетів.</p>
                     </div>
                 </div>
 
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-7" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Бланкова продукція</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -195,20 +175,20 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Перевірити наявність бланкової продукції та бланків суворої звітності (протоколи ГБ/ПДР, постанови, термінові заборонні приписи стосовно кривдника).</p>
+                        <p>Перевірити наявність бланкової продукції та бланків суворої звітності (протоколи ГБ/ПДР, постанови, термінові заборонні приписи).</p>
                     </div>
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
-                    <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 3. Service transport of the unit
+                    <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 3. Службовий транспорт підрозділу
                 </h2>
                 
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-8" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Дорожня документація</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -225,8 +205,8 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-9" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
-                            <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Staffing and technical condition</span>
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Комплектування та технічний стан</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
                             <span>Підказка</span>
@@ -242,7 +222,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30 border-t border-slate-800/50">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-10" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Стан заповнення журналів</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -252,12 +232,12 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Переглянути службову документацію: журнал виїзду та повернення службового автотранспорту, а також проведення інструктажів водіїв.</p>
+                        <p>Переглянути журнал виїзду та повернення службового автотранспорту, а також проведення інструктажів водіїв.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 4. Обстеження кабінетів
                 </h2>
@@ -265,7 +245,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-11" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Обстеження кабінетів та умови праці</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -275,12 +255,12 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Обстеження кабінетів на предмет виявлення заборонених речей (що можуть бути використані для катування, речових доказів, спиртного тощо). Оцінити умови праці, загальний порядок, таблички.</p>
+                        <p>Обстеження кабінетів на предмет виявлення заборонених речей (що можуть бути речовими доказами, спиртного тощо). Оцінити умови праці, загальний порядок, наявність інформаційних табличок.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 5. Територія
                 </h2>
@@ -288,7 +268,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-12" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Стан території, бокси та безпека периметру</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -298,12 +278,12 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Оглянути стан території (нумерація боксів, таблички, опечатування). Перевірити захищеність периметру (освітлення вночі, колючий дріт, «сліпі зони» у системі відеоспостереження).</p>
+                        <p>Оглянути стан території (нумерація боксів, таблички, опечатування). Перевірити захищеність периметру (освітлення вночі, колючий дріт, «сліпі зони» відеоспостереження).</p>
                     </div>
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 6. Кімната зберігання речових доказів, сигналізація та вилучені ТЗ
                 </h2>
@@ -311,7 +291,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-13" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Кімната зберігання речових доказів, сигналізація та ТЗ</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -331,7 +311,7 @@
                 </div>
             </div>
 
-            <div class="section-block bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
+            <div class="bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-800/80 shadow-xl space-y-1">
                 <h2 class="text-base font-bold text-sky-400 border-b border-slate-800 pb-2.5 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 7. Оформлення результатів перевірки
                 </h2>
@@ -339,7 +319,7 @@
                 <div class="item-row py-2.5 px-1 rounded-xl hover:bg-slate-800/30">
                     <div class="flex items-center justify-between gap-4">
                         <label class="flex items-center gap-3 cursor-pointer select-none group flex-1">
-                            <input type="checkbox" id="task-14" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
+                            <input type="checkbox" class="task-checkbox w-4 h-4 rounded border-slate-700 bg-slate-950 text-blue-500 focus:ring-blue-500/30 transition">
                             <span class="font-medium text-sm text-slate-200 group-hover:text-white transition">Складання рапорту та терміни завантаження в СЕД</span>
                         </label>
                         <button type="button" class="text-xs text-slate-400 hover:text-sky-400 font-medium flex items-center gap-1 shrink-0 info-btn">
@@ -349,7 +329,7 @@
                     </div>
                     <div class="hidden mt-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/60 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <p class="font-semibold text-sky-400 mb-1">Що та як перевіряти:</p>
-                        <p>Оформити рапорт за результатами перевірки. Зафіксувати всі виявлені недоліки, додати фотоматеріали та забезпечити завантаження підсумкового документа до СЕД відповідно до регламентованих термінів перевірки.</p>
+                        <p>Оформити рапорт (опис за блоками + фотофіксація позитиву/негативу). Документ завантажується в <span class="text-amber-400">СЕД</span> на ім'я начальника ГУНП за власним підписом <span class="text-rose-400 font-medium">не пізніше 12:00 год. наступного дня</span>.</p>
                     </div>
                 </div>
             </div>
@@ -358,101 +338,53 @@
     </div>
 
     <script>
-        // Керування підказками (Розгортання по кліку)
+        // Обробка кнопкових роз’яснень окремо
         document.querySelectorAll('.info-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const infoBlock = btn.closest('.item-row').querySelector('div[class*="bg-slate-950"]');
+                const infoBlock = btn.closest('.item-row').querySelector('.hidden, .block');
                 const chevron = btn.querySelector('.chevron');
                 
                 if (infoBlock.classList.contains('hidden')) {
-                    infoBlock.classList.replace('hidden', 'block');
+                    infoBlock.classList.remove('hidden');
+                    infoBlock.classList.add('block');
                     chevron.classList.add('rotate-180');
                 } else {
-                    infoBlock.classList.replace('block', 'hidden');
+                    infoBlock.classList.remove('block');
+                    infoBlock.classList.add('hidden');
                     chevron.classList.remove('rotate-180');
                 }
             });
         });
 
-        // Калькуляція прогресу та збереження стану в LocalStorage
-        function updateProgress() {
-            const checkboxes = document.querySelectorAll('.task-checkbox');
-            const total = checkboxes.length;
-            let checkedCount = 0;
-
-            checkboxes.forEach(cb => {
-                const row = cb.closest('.item-row');
-                const labelSpan = row.querySelector('span.transition');
-                if (cb.checked) {
-                    checkedCount++;
-                    labelSpan.classList.add('task-checked');
-                    localStorage.setItem(cb.id, 'true');
+        // Інтерактивні чекбокси (Ефект викреслювання виконаного пункту)
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const labelText = checkbox.nextElementSibling;
+                if (checkbox.checked) {
+                    labelText.classList.add('task-checked');
                 } else {
-                    labelSpan.classList.remove('task-checked');
-                    localStorage.removeItem(cb.id);
+                    labelText.classList.remove('task-checked');
                 }
             });
-
-            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
-            document.getElementById('progress-bar').style.width = percent + '%';
-            document.getElementById('progress-text').innerText = `${checkedCount} з ${total} (${percent}%)`;
-        }
-
-        // Ініціалізація даних при завантаженні сторінки
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.task-checkbox').forEach(cb => {
-                if (localStorage.getItem(cb.id) === 'true') cb.checked = true;
-                cb.addEventListener('change', updateProgress);
-            });
-            updateProgress();
         });
 
-        // Кнопка повного скидання прогресу
-        document.getElementById('reset-btn').addEventListener('click', () => {
-            if(confirm('Скинути весь прогрес перевірки?')) {
-                document.querySelectorAll('.task-checkbox').forEach(cb => {
-                    cb.checked = false;
-                    localStorage.removeItem(cb.id);
-                });
-                updateProgress();
-            }
-        });
-
-        // Живий локальний пошук
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            document.querySelectorAll('.item-row').forEach(row => {
-                if (row.innerText.toLowerCase().includes(query)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            document.querySelectorAll('.section-block').forEach(section => {
-                const visible = section.querySelectorAll('.item-row:not([style*="display: none"])');
-                section.style.display = (visible.length === 0 && query !== '') ? 'none' : '';
-            });
-        });
-
-        // Глобальне розгортання всіх підказок
+        // Кнопка: Розгорнути все
         document.getElementById('open-all-btn').addEventListener('click', () => {
-            document.querySelectorAll('.section-block .item-row').forEach(row => {
-                if(row.style.display !== 'none') {
-                    const info = row.querySelector('div[class*="bg-slate-950"]');
-                    if (info) info.classList.replace('hidden', 'block');
-                    const chevron = row.querySelector('.chevron');
-                    if (chevron) chevron.classList.add('rotate-180');
-                }
+            document.querySelectorAll('.item-row').forEach(row => {
+                const info = row.querySelector('.hidden, .block');
+                if (info) { info.classList.replace('hidden', 'block'); }
+                const chevron = row.querySelector('.chevron');
+                if (chevron) { chevron.classList.add('rotate-180'); }
             });
         });
 
-        // Глобальне згортання всіх підказок
+        // Кнопка: Згорнути все
         document.getElementById('close-all-btn').addEventListener('click', () => {
-            document.querySelectorAll('.section-block .item-row').forEach(row => {
-                const info = row.querySelector('div[class*="bg-slate-950"]');
-                if (info) info.classList.replace('block', 'hidden');
+            document.querySelectorAll('.item-row').forEach(row => {
+                const info = row.querySelector('.hidden, .block');
+                if (info) { info.classList.replace('block', 'hidden'); }
                 const chevron = row.querySelector('.chevron');
-                if (chevron) chevron.classList.remove('rotate-180');
+                if (chevron) { chevron.classList.remove('rotate-180'); }
             });
         });
     </script>
